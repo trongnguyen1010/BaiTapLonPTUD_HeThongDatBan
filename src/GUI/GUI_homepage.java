@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -66,6 +67,8 @@ public class GUI_homepage extends JFrame {
 	private JPanel Show;
 	private CardLayout CardLayout;
 	private GUI_QuanLyBan QuanLyBan;
+	private GUI_QuanLyKhachHang QuanLyKhachHang;
+	private GUI_QuanLyNhanVien QuanLyNhanVien;
 	
 	
 	private void addButtonEffects(JButton button, Color hoverColor, Font hoverFont, Color defaultColor, Font defaultFont, Color activeColor) {
@@ -123,7 +126,8 @@ public class GUI_homepage extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1455, 820);
 		contentPane = new JPanel();
-		contentPane.setSize(new Dimension(1440, 800));
+//		contentPane.setSize(new Dimension(1440, 800));
+		contentPane.setBounds(new Rectangle(0, 0, 1440, 800));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
@@ -429,29 +433,49 @@ public class GUI_homepage extends JFrame {
 		        // Xử lý sự kiện khi nhấn vào button
 		    }
 		});
-		
+//		----------------------------------------------------------------------
 		Show = new JPanel();
 		Show.setForeground(new Color(0, 0, 0));
 		Show.setFont(new Font("Jokerman", Font.BOLD, 48));
 		Show.setBorder(new LineBorder(new Color(0, 0, 0)));
-		Show.setBounds(200, 100, 1240, 600);
+		Show.setBounds(220, 100, 1220, 700);
 		contentPane.add(Show);
 		
 		//Show pages
 		Show.setLayout(new CardLayout());
 		
 		CardLayout = (CardLayout)Show.getLayout();
-		HoaDon = new GUI_HoaDon();
-		QLyPhim = new GUI_QuanLyKhachHang();
-		KhachHang = new GUI_QuanLyNhanVien();
+//		HoaDon = new GUI_HoaDon();
+		QuanLyKhachHang = new GUI_QuanLyKhachHang();
+		QuanLyNhanVien = new GUI_QuanLyNhanVien();
 		QuanLyBan = new GUI_QuanLyBan();
 		
 		Show.add(QuanLyBan,"QuanLyBan");
-		Show.add(HoaDon,"HoaDon");
-		Show.add(GDphim,"QuanLyKhachHang");
-		Show.add(KhachHang,"QuanLyNhanVien");
-		Show.add(ThongKe,"ThongKe");
+//		Show.add(HoaDon,"HoaDon");
+		Show.add(QuanLyKhachHang,"QuanLyKhachHang");
+		Show.add(QuanLyNhanVien,"QuanLyNhanVien");
+//		Show.add(ThongKe,"ThongKe");
 //		Show.add(TT_Hoadon,"TT_Hoadon");
+		
+		
+		btnQuanLyKhachHang.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+//		        QuanLyKhachHang.refreshData(); 
+				CardLayout.show(Show,"QuanLyKhachHang");
+			}
+			
+		});
+		btnQuanLyNhanVien.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+//		        QuanLyKhachHang.refreshData(); 
+				CardLayout.show(Show,"QuanLyNhanVien");
+			}
+			
+		});
 	}
 
 }
