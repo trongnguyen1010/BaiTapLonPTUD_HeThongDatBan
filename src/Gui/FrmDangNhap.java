@@ -197,6 +197,8 @@ public class FrmDangNhap extends JFrame implements ActionListener {
         label.setForeground(color);
         label.setBounds(x, y, width, height);
         return label;
+
+//        return 0/;
     }
 
     // Create a text field with specific parameters
