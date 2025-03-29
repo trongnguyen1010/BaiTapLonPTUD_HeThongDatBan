@@ -3,10 +3,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package GUI;
+import java.util.List;
+
 import javax.swing.ImageIcon;
+import javax.swing.table.DefaultTableModel;
 
 import GUI.CreateKhachHangDialog;
 import DAO.KhachHangDAO;
+import Entity.KhachHang;
 
 /**
  *
@@ -21,6 +25,7 @@ public class GUI_QuanLyKhachHang extends javax.swing.JPanel {
      */
     public GUI_QuanLyKhachHang() {
         initComponents();
+        loadData();
     }
 
     /**
@@ -252,7 +257,12 @@ public class GUI_QuanLyKhachHang extends javax.swing.JPanel {
     }// </editor-fold>                        
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        // TODO add your handling code here:
+            int row = jTable1.getSelectedRow();
+            String id = jTable1.getValueAt(row, 1).toString();
+            KhachHang nv = KH_DAO.getKhachHangById(id);
+
+            UpdateKhachHangDialog dialog = new UpdateKhachHangDialog(null, true, this, nv);
+            dialog.setVisible(true);
     }                                        
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) { 
@@ -262,7 +272,29 @@ public class GUI_QuanLyKhachHang extends javax.swing.JPanel {
     }                                        
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        // TODO add your handling code here:
+            int row = jTable1.getSelectedRow();
+            if (row == -1) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn khách hàng cần xóa!");
+                return;
+            }
+            
+            String maKH = jTable1.getValueAt(row, 1).toString();
+            int confirm = javax.swing.JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc chắn muốn xóa khách hàng này?",
+                "Xác nhận xóa",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE
+            );
+            
+            if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+                if (KH_DAO.delete(maKH)) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Xóa khách hàng thành công!");
+                    loadData(); // Tải lại dữ liệu sau khi xóa
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Xóa khách hàng thất bại!");
+                }
+            }
     }                                        
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {                                           
@@ -277,6 +309,23 @@ public class GUI_QuanLyKhachHang extends javax.swing.JPanel {
         // TODO add your handling code here:
     }                                           
 
+    public void loadData() {
+        List<KhachHang> listKhachHang = KH_DAO.getAllKhachHang();
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+        
+        int stt = 1;
+        for (KhachHang kh : listKhachHang) {
+            model.addRow(new Object[]{
+                stt++,
+                kh.getMaKhachHang(),
+                kh.getTenKhachHang(),
+                kh.getEmail(),
+                kh.getSdt(),
+                kh.getGioiTinh()
+            });
+        }
+    }
 
     // Variables declaration - do not modify                     
     private javax.swing.JButton jButton1;
@@ -290,9 +339,4 @@ public class GUI_QuanLyKhachHang extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration                   
-
-	public void refreshData() {
-		// TODO Auto-generated method stub
-		
-	}
 }

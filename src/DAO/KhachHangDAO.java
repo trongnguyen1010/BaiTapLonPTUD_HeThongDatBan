@@ -12,6 +12,14 @@ import java.util.List;
 
 public class KhachHangDAO {
 
+    public KhachHangDAO() {
+        try {
+            ConnectDB.getInstance().connect();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Lấy khách hàng theo ID
     public KhachHang getKhachHangById(String maKhachHang) {
         ConnectDB.getInstance();

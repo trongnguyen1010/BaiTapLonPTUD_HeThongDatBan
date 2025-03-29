@@ -21,17 +21,17 @@ public class CreateKhachHangDialog extends javax.swing.JDialog {
         initComponents();
     }
 
-    public CreateKhachHangDialog(java.awt.Frame parent, boolean modal, GUI_QuanLyKhachHang NV_GUI) {
+    public CreateKhachHangDialog(java.awt.Frame parent, boolean modal, GUI_QuanLyKhachHang KH_GUI) {
         super(parent, modal);
         initComponents();
-        this.KH_GUI = NV_GUI;
+        this.KH_GUI = KH_GUI;
     }
     
     private KhachHang getInputFields() {
         String id = RandomGenerator.getRandomId();
         String hoTen = txtHoTen.getText().trim();
         String sdt = txtSdt.getText().trim();
-        String email = txtSdt.getText().trim();
+        String email = txtEmail.getText().trim();
         String gioiTinh = cboxGioiTinh.getSelectedItem().toString();
 
         return new KhachHang(id, hoTen, email, gioiTinh, sdt);
@@ -146,6 +146,7 @@ public class CreateKhachHangDialog extends javax.swing.JDialog {
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
     	KhachHang kh = getInputFields();
         KH_DAO.insert(kh);
+        KH_GUI.loadData();
         this.dispose();
     }
 

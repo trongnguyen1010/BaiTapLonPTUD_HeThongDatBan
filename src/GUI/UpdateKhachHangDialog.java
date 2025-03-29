@@ -155,6 +155,7 @@ public class UpdateKhachHangDialog extends javax.swing.JDialog {
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
       	KhachHang kh = getInputFields();
         KH_DAO.update(kh);
+        KH_GUI.loadData();
         this.dispose();
     }
 
