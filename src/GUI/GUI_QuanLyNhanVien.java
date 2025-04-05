@@ -50,20 +50,20 @@ public class GUI_QuanLyNhanVien extends JPanel {
 		
 		
 		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(118, 20, 65, 100);
+		panel_2.setBounds(118, 20, 70, 100);
 		panel_2.setLayout(new BorderLayout()); 
 		panel_1.add(panel_2);
 		
-		JButton btnThem = new JButton("<html><center>Thêm</center></html>");
+		JButton btnThem = new JButton("<html>Thêm</html>");
 		btnThem.setIcon(new ImageIcon(getClass().getResource("/view/icon/icon_them.png"))); 
-		btnThem.setFont(new Font("Segoe UI Black", Font.BOLD, 18));
+		btnThem.setFont(new Font("Segoe UI Black", Font.BOLD, 14));
 		btnThem.setForeground(Color.BLACK);
 //		btnThem.setBackground(defaultColor);
-		btnThem.setPreferredSize(new Dimension(80, 100));
+		btnThem.setPreferredSize(new Dimension(85, 100));
 		btnThem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Hiệu ứng chuột
-		btnThem.setHorizontalTextPosition(SwingConstants.CENTER); // Chữ bên phải icon
-		btnThem.setVerticalTextPosition(SwingConstants.BOTTOM);  // Căn giữa icon & chữ
-		btnThem.setIconTextGap(10);
+		btnThem.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnThem.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnThem.setIconTextGap(5);
 		
 		panel_2.add(btnThem, BorderLayout.CENTER);
 		

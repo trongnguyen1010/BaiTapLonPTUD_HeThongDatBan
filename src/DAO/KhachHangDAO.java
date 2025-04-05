@@ -20,7 +20,6 @@ public class KhachHangDAO {
         }
     }
 
-    // Lấy khách hàng theo ID
     public KhachHang getKhachHangById(String maKhachHang) {
         ConnectDB.getInstance();
         Connection con = ConnectDB.getConnection();
@@ -29,7 +28,7 @@ public class KhachHangDAO {
         KhachHang kh = null;
 
         try {
-            String sql = "SELECT * FROM KhachHang WHERE MaKhachHang = ?";
+            String sql = "SELECT MaKhachHang, TenKhachHang, Email, GioiTinh, SDT FROM KhachHang WHERE MaKhachHang = ?";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, maKhachHang);
             rs = stmt.executeQuery();
@@ -38,7 +37,8 @@ public class KhachHangDAO {
                 String maKH = rs.getString("MaKhachHang");
                 String tenKH = rs.getString("TenKhachHang");
                 String email = rs.getString("Email");
-                String gioiTinh = rs.getString("GioiTinh");
+                int gioiTinhBit = rs.getInt("GioiTinh");  // Lấy kiểu bit
+                String gioiTinh = (gioiTinhBit == 1) ? "Nam" : "Nữ";  // Chuyển đổi sang chuỗi
                 String sdt = rs.getString("SDT");
 
                 kh = new KhachHang(maKH, tenKH, email, gioiTinh, sdt);
@@ -56,7 +56,7 @@ public class KhachHangDAO {
         return kh;
     }
 
-    // Thêm khách hàng
+
     public boolean insert(KhachHang kh) {
         ConnectDB.getInstance();
         Connection con = ConnectDB.getConnection();
@@ -68,7 +68,8 @@ public class KhachHangDAO {
             stmt.setString(1, kh.getMaKhachHang());
             stmt.setString(2, kh.getTenKhachHang());
             stmt.setString(3, kh.getEmail());
-            stmt.setString(4, kh.getGioiTinh());
+            int gioiTinhBit = kh.getGioiTinh().equals("Nam") ? 1 : 0;  // Chuyển đổi về bit
+            stmt.setInt(4, gioiTinhBit);
             stmt.setString(5, kh.getSdt());
             n = stmt.executeUpdate();
         } catch (SQLException e) {
@@ -83,7 +84,7 @@ public class KhachHangDAO {
         return n > 0;
     }
 
-    // Sửa thông tin khách hàng
+
     public boolean update(KhachHang kh) {
         ConnectDB.getInstance();
         Connection con = ConnectDB.getConnection();
@@ -94,7 +95,8 @@ public class KhachHangDAO {
             stmt = con.prepareStatement(sql);
             stmt.setString(1, kh.getTenKhachHang());
             stmt.setString(2, kh.getEmail());
-            stmt.setString(3, kh.getGioiTinh());
+            int gioiTinhBit = kh.getGioiTinh().equals("Nam") ? 1 : 0;  // Chuyển đổi về bit
+            stmt.setInt(3, gioiTinhBit);
             stmt.setString(4, kh.getSdt());
             stmt.setString(5, kh.getMaKhachHang());
             n = stmt.executeUpdate();
@@ -109,6 +111,7 @@ public class KhachHangDAO {
         }
         return n > 0;
     }
+
 
     // Xóa khách hàng
     public boolean delete(String maKhachHang) {
@@ -133,7 +136,6 @@ public class KhachHangDAO {
         return n > 0;
     }
 
-    // Lấy tất cả khách hàng
     public List<KhachHang> getAllKhachHang() {
         ConnectDB.getInstance();
         Connection con = ConnectDB.getConnection();
@@ -142,7 +144,7 @@ public class KhachHangDAO {
         List<KhachHang> listKhachHang = new ArrayList<>();
 
         try {
-            String sql = "SELECT * FROM KhachHang";
+            String sql = "SELECT MaKhachHang, TenKhachHang, Email, GioiTinh, SDT FROM KhachHang";
             stmt = con.prepareStatement(sql);
             rs = stmt.executeQuery();
 
@@ -150,7 +152,8 @@ public class KhachHangDAO {
                 String maKH = rs.getString("MaKhachHang");
                 String tenKH = rs.getString("TenKhachHang");
                 String email = rs.getString("Email");
-                String gioiTinh = rs.getString("GioiTinh");
+                int gioiTinhBit = rs.getInt("GioiTinh");
+                String gioiTinh = (gioiTinhBit == 1) ? "Nam" : "Nữ";
                 String sdt = rs.getString("SDT");
 
                 KhachHang kh = new KhachHang(maKH, tenKH, email, gioiTinh, sdt);
@@ -168,4 +171,5 @@ public class KhachHangDAO {
         }
         return listKhachHang;
     }
+
 }

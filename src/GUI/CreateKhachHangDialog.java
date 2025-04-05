@@ -10,7 +10,10 @@ import utils.RandomGenerator;
 import DAO.KhachHangDAO;
 
 public class CreateKhachHangDialog extends javax.swing.JDialog {
-    private GUI_QuanLyKhachHang KH_GUI;
+    /**
+	 * 
+	 */
+	private GUI_QuanLyKhachHang KH_GUI;
     private KhachHangDAO KH_DAO = new KhachHangDAO();
 
     /**
@@ -33,6 +36,7 @@ public class CreateKhachHangDialog extends javax.swing.JDialog {
         String sdt = txtSdt.getText().trim();
         String email = txtEmail.getText().trim();
         String gioiTinh = cboxGioiTinh.getSelectedItem().toString();
+        
 
         return new KhachHang(id, hoTen, email, gioiTinh, sdt);
     }

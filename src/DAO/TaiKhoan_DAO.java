@@ -23,7 +23,7 @@ public class TaiKhoan_DAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                tk = new TaiKhoan(rs.getString("TenDangNhap"), rs.getString("MatKhau"), rs.getString("VaiTro"), rs.getString("MaNhanVien"));
+                tk = new TaiKhoan(rs.getString("TenDangNhap"), rs.getString("MatKhau"));
             }
         } catch (Exception e) {
             e.printStackTrace();
