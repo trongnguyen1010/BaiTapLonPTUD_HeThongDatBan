@@ -18,7 +18,7 @@ public class GUI_QuanLyMonAn extends JPanel {
         "/view/image/n2.jpg", "/view/image/n2.jpg", "/view/image/n2.jpg", "/view/image/n2.jpg", "/view/image/n2.jpg",
         "/view/image/n2.jpg", "/view/image/n2.jpg"
     };
-
+    //
     public GUI_QuanLyMonAn() {
         setLayout(new BorderLayout());
 
