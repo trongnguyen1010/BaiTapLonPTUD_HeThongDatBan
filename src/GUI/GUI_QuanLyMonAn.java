@@ -1,10 +1,19 @@
 package GUI;
 
 import javax.swing.*;
+
+
+import DAO.MonAn_DAO;
+import Entity.MonAn;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import GUI.CreateMonAnDialog;
 public class GUI_QuanLyMonAn extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -14,9 +23,9 @@ public class GUI_QuanLyMonAn extends JPanel {
     private String[] tenMon = {"Món 1", "Món 2", "Món 3", "Món 4", "Món 5", "Món 6", "Món 7", "Món 8", "Món 9", "Món 10", "Món 11", "Món 12"};
     private String[] gia = {"10.000 VND", "20.000 VND", "15.000 VND", "25.000 VND", "30.000 VND", "35.000 VND", "40.000 VND", "45.000 VND", "50.000 VND", "55.000 VND", "60.000 VND", "65.000 VND"};
     private String[] duongDanAnh = {
-        "/view/image/n2.jpg", "/view/image/n2.jpg", "/view/image/n2.jpg", "/view/image/n2.jpg", "/view/image/n2.jpg",
-        "/view/image/n2.jpg", "/view/image/n2.jpg", "/view/image/n2.jpg", "/view/image/n2.jpg", "/view/image/n2.jpg",
-        "/view/image/n2.jpg", "/view/image/n2.jpg"
+        "n2.jpg", "n2.jpg", "n2.jpg", "n2.jpg", "n2.jpg",
+        "n2.jpg", "n2.jpg", "n2.jpg", "n2.jpg", "n2.jpg",
+        "n2.jpg", "n2.jpg"
     };
    
    
@@ -112,6 +121,14 @@ public class GUI_QuanLyMonAn extends JPanel {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);  // Không có thanh cuộn ngang
         centerCenter.add(scrollPane, BorderLayout.CENTER);
         centerMain.add(centerCenter, BorderLayout.CENTER);
+        jButton3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CreateMonAnDialog dialog = new CreateMonAnDialog((JFrame) SwingUtilities.getWindowAncestor(GUI_QuanLyMonAn.this), GUI_QuanLyMonAn.this);
+                dialog.setVisible(true);
+            }
+        });
+
 
        
         
@@ -156,11 +173,23 @@ public class GUI_QuanLyMonAn extends JPanel {
 
 	    // Ảnh món ăn
 	   
-	    ImageIcon icon = new ImageIcon(getClass().getResource(duongDanAnh)); // Sử dụng getClass().getResource để lấy ảnh từ thư mục resource
-	    Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH); // Điều chỉnh kích thước ảnh
-	    JLabel imgLabel = new JLabel(new ImageIcon(img)); // Tạo JLabel với ảnh
-	    imgLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Canh giữa ảnh trong JPanel
-	    card.add(imgLabel);
+//	    ImageIcon icon = new ImageIcon(getClass().getResource("/view/image/"+ duongDanAnh)); // Sử dụng getClass().getResource để lấy ảnh từ thư mục resource
+//	    Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH); // Điều chỉnh kích thước ảnh
+//	    JLabel imgLabel = new JLabel(new ImageIcon(img)); // Tạo JLabel với ảnh
+//	    imgLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Canh giữa ảnh trong JPanel
+//	    card.add(imgLabel);
+	   
+	    URL imageUrl = getClass().getResource("/view/image/" + duongDanAnh);
+	    if (imageUrl == null) {
+	        System.out.println("Không tìm thấy hình ảnh: " + duongDanAnh);
+	    } else {
+	        ImageIcon icon = new ImageIcon(imageUrl);
+	        Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+	        JLabel imgLabel = new JLabel(new ImageIcon(img));
+	        imgLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	        card.add(imgLabel);
+	    }
+
 
 
 
@@ -181,6 +210,28 @@ public class GUI_QuanLyMonAn extends JPanel {
 
 	    return card;
 	}
+	
+	public void loadData() {
+	    foodListPanel.removeAll(); // Clear danh sách cũ
+
+	    List<MonAn> list = new ArrayList<MonAn>();
+		try {
+			list = MonAn_DAO.getAllMonAn();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} // Lấy từ DB
+	    for (MonAn mon : list) {
+	        JPanel card = createFoodCard(mon.getTenMonAn(), mon.getDonGia() + " VND", null);
+	        foodListPanel.add(card);
+	    }
+
+	    foodListPanel.revalidate();
+	    foodListPanel.repaint();
+	}
+
+
+                        
 
 	// Main chạy chương trình
 	public static void main(String[] args) {
