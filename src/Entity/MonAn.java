@@ -1,5 +1,6 @@
 package Entity;
 
+import java.awt.Color;
 import java.util.Objects;
 
 public class MonAn {
@@ -7,16 +8,19 @@ public class MonAn {
   private String tenMonAn;
   private double donGia;
   private int soLuong;
+  private byte[] hinhAnh;
+  private int maloai;
  
   
-  public MonAn(String maMonAn, String tenMonAn, double donGia, int soLuong ) {
+  public MonAn(String maMonAn, String tenMonAn, double donGia, int soLuong,byte[] hinhAnh ) {
 	super();
 	this.maMonAn = maMonAn;
 	this.tenMonAn = tenMonAn;
 	this.donGia = donGia;
 	this.soLuong = soLuong;
-	
+	 this.hinhAnh = hinhAnh;
 }
+  
 
 public MonAn() {
 	super();
@@ -61,6 +65,37 @@ public boolean equals(Object obj) {
 	MonAn other = (MonAn) obj;
 	return Objects.equals(maMonAn, other.maMonAn);
 }
+
+private String duongDanAnh;
+
+public String getDuongDanAnh() {
+    return duongDanAnh;
+}
+
+public void setDuongDanAnh(String duongDanAnh) {
+    this.duongDanAnh = duongDanAnh;
+}
+public byte[] gethinhAnh() {
+	return hinhAnh;
+}
+
+
+public void sethinhAnh(byte[] hinhAnh) {
+	this.hinhAnh = hinhAnh;
+}
+
+
+public int getMaloai() {
+	return maloai;
+}
+
+public void setMaloai(int maloai) {
+	this.maloai = maloai;
+}
+
+
+
+
   
   
 }

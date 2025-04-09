@@ -2,249 +2,346 @@ package GUI;
 
 import javax.swing.*;
 
-
 import DAO.MonAn_DAO;
+import Entity.KhachHang;
 import Entity.MonAn;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import GUI.CreateMonAnDialog;
+import java.util.stream.Collectors;
+
 public class GUI_QuanLyMonAn extends JPanel {
 
     private static final long serialVersionUID = 1L;
-    private JPanel foodListPanel;  // Danh sách món ăn
+    private JPanel foodListPanel;
+    private MonAn selectedMonAn = null;
 
-    // Mảng món ăn có sẵn
-    private String[] tenMon = {"Món 1", "Món 2", "Món 3", "Món 4", "Món 5", "Món 6", "Món 7", "Món 8", "Món 9", "Món 10", "Món 11", "Món 12"};
-    private String[] gia = {"10.000 VND", "20.000 VND", "15.000 VND", "25.000 VND", "30.000 VND", "35.000 VND", "40.000 VND", "45.000 VND", "50.000 VND", "55.000 VND", "60.000 VND", "65.000 VND"};
-    private String[] duongDanAnh = {
-        "n2.jpg", "n2.jpg", "n2.jpg", "n2.jpg", "n2.jpg",
-        "n2.jpg", "n2.jpg", "n2.jpg", "n2.jpg", "n2.jpg",
-        "n2.jpg", "n2.jpg"
-    };
-   
-   
+
     public GUI_QuanLyMonAn() {
         setLayout(new BorderLayout());
 
-        // --- NORTH --- 
+        // --- NORTH ---
         JPanel panelNorth = new JPanel();
         panelNorth.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 40));
         panelNorth.setBackground(Color.LIGHT_GRAY);
-        panelNorth.setPreferredSize(new Dimension(1200, 100));
+        panelNorth.setPreferredSize(new Dimension(1440, 100));
         add(panelNorth, BorderLayout.NORTH);
 
-        // --- WEST: MENU DỌC --- 
-        JPanel panelWest = new JPanel();
-        panelWest.setLayout(new BoxLayout(panelWest, BoxLayout.Y_AXIS));
-        panelWest.setBackground(Color.CYAN);
-        panelWest.setPreferredSize(new Dimension(180, 0));
-        add(panelWest, BorderLayout.WEST);
+     
+        
 
-        // Thêm các mục menu bằng JLabel (chữ thôi)
-        panelWest.add(createMenuItem("Món Mới"));
-        panelWest.add(Box.createVerticalStrut(50));
-        panelWest.add(createMenuItem("Khai Vị"));
-        panelWest.add(Box.createVerticalStrut(50));
-        panelWest.add(createMenuItem("Lẩu"));
-        panelWest.add(Box.createVerticalStrut(50));
-        panelWest.add(createMenuItem("Heo-Gà-Bò"));
-        panelWest.add(Box.createVerticalStrut(50));
-        panelWest.add(createMenuItem("Hải Sản"));
-        panelWest.add(Box.createVerticalStrut(50));
-        panelWest.add(createMenuItem("Đồ uống"));
-        panelWest.add(Box.createVerticalStrut(50));
-        panelWest.add(createMenuItem("Món Tráng Miệng"));
-        panelWest.add(Box.createVerticalStrut(0));
-
-        // --- CENTER chính ---
+        // --- CENTER ---
         JPanel centerMain = new JPanel(new BorderLayout());
         add(centerMain, BorderLayout.CENTER);
 
-        // --- CENTER - NORTH: thanh chức năng ---
+        // CENTER - NORTH: Thanh công cụ
         JPanel centerNorth1 = new JPanel();
         centerNorth1.setBackground(new Color(161, 227, 249));
         centerNorth1.setPreferredSize(new Dimension(1020, 130));
         centerNorth1.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 20));
         centerMain.add(centerNorth1, BorderLayout.NORTH);
 
-        // Button THÊM
-        JButton jButton3 = new JButton("THÊM");
-        jButton3.setIcon(new ImageIcon(GUI_QuanLyMonAn.class.getResource("/view/icon/icon_them.png")));
-        jButton3.setBorderPainted(false);
-        jButton3.setContentAreaFilled(false);
-        jButton3.setFocusPainted(false);
-        jButton3.setHorizontalTextPosition(SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(SwingConstants.BOTTOM);
-        centerNorth1.add(jButton3);
+        // Nút THÊM
+        JButton btnThem = new JButton("THÊM");
+        btnThem.setIcon(new ImageIcon(GUI_QuanLyMonAn.class.getResource("/view/icon/icon_them.png")));
+        btnThem.setBorderPainted(false);
+        btnThem.setContentAreaFilled(false);
+        btnThem.setFocusPainted(false);
+        btnThem.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnThem.setVerticalTextPosition(SwingConstants.BOTTOM);
+        centerNorth1.add(btnThem);
 
-        // Button CẬP NHẬT
-        JButton jButton1 = new JButton("CẬP NHẬT");
-        jButton1.setIcon(new ImageIcon(GUI_QuanLyMonAn.class.getResource("/view/icon/icon_capnhat.png")));
-        jButton1.setBorderPainted(false);
-        jButton1.setContentAreaFilled(false);
-        jButton1.setFocusPainted(false);
-        jButton1.setHorizontalTextPosition(SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(SwingConstants.BOTTOM);
-        centerNorth1.add(jButton1);
+        // Nút CẬP NHẬT
+        JButton btnCapNhat = new JButton("CẬP NHẬT");
+        btnCapNhat.setIcon(new ImageIcon(GUI_QuanLyMonAn.class.getResource("/view/icon/icon_capnhat.png")));
+        btnCapNhat.setBorderPainted(false);
+        btnCapNhat.setContentAreaFilled(false);
+        btnCapNhat.setFocusPainted(false);
+        btnCapNhat.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnCapNhat.setVerticalTextPosition(SwingConstants.BOTTOM);
+        centerNorth1.add(btnCapNhat);
 
-        // Button XÓA
-        JButton jButton4 = new JButton("XÓA");
-        jButton4.setIcon(new ImageIcon(GUI_QuanLyMonAn.class.getResource("/view/icon/icon_xoa.png")));
-        jButton4.setBorderPainted(false);
-        jButton4.setContentAreaFilled(false);
-        jButton4.setFocusPainted(false);
-        jButton4.setHorizontalTextPosition(SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(SwingConstants.BOTTOM);
-        centerNorth1.add(jButton4);
+        // Nút XÓA
+        JButton btnXoa = new JButton("XÓA");
+        btnXoa.setIcon(new ImageIcon(GUI_QuanLyMonAn.class.getResource("/view/icon/icon_xoa.png")));
+        btnXoa.setBorderPainted(false);
+        btnXoa.setContentAreaFilled(false);
+        btnXoa.setFocusPainted(false);
+        btnXoa.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnXoa.setVerticalTextPosition(SwingConstants.BOTTOM);
+        centerNorth1.add(btnXoa);
 
         // Combobox loại món
-        JComboBox<String> jComboBox1 = new JComboBox<>(new String[]{"Tất cả", "Tráng miệng", "Lẩu", "Khai vị"});
-        jComboBox1.setPreferredSize(new Dimension(184, 65));
-        centerNorth1.add(jComboBox1);
+        JComboBox<String> comboLoai = new JComboBox<>(new String[]{
+        	    "Tất cả",
+        	    "Món Mới",
+        	    "Khai Vị",
+        	    "Lẩu",
+        	    "Heo-Gà-Bò",
+        	    "Hải Sản",
+        	    "Đồ uống",
+        	    "Món Tráng Miệng"
+        	});
+        	comboLoai.setPreferredSize(new Dimension(184, 65));
+        	centerNorth1.add(comboLoai);
+
 
         // TextField tìm kiếm
-        JTextField jTextField1 = new JTextField("Tìm kiếm");
-        jTextField1.setPreferredSize(new Dimension(362, 65));
-        centerNorth1.add(jTextField1);
+        JTextField txtTimKiem = new JTextField("Tìm kiếm");
+        txtTimKiem.setPreferredSize(new Dimension(362, 65));
+        centerNorth1.add(txtTimKiem);
 
-        // --- CENTER - CENTER: Danh sách món ăn --- 
+        // --- CENTER - CENTER: danh sách món ăn ---
         JPanel centerCenter = new JPanel(new BorderLayout());
-        foodListPanel = createFoodList();  // Tạo danh sách món ăn
+        foodListPanel = createFoodList();
         JScrollPane scrollPane = new JScrollPane(foodListPanel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);  // Thanh cuộn dọc
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);  // Không có thanh cuộn ngang
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         centerCenter.add(scrollPane, BorderLayout.CENTER);
         centerMain.add(centerCenter, BorderLayout.CENTER);
-        jButton3.addActionListener(new ActionListener() {
+
+        // --- Load data từ DB ---
+        loadData();
+
+        // Sự kiện nút Thêm
+        btnThem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 CreateMonAnDialog dialog = new CreateMonAnDialog((JFrame) SwingUtilities.getWindowAncestor(GUI_QuanLyMonAn.this), GUI_QuanLyMonAn.this);
                 dialog.setVisible(true);
             }
         });
+     // Trong btnCapNhat, bạn nên hiện thông báo:
+        btnCapNhat.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedMonAn != null) {
+                    UpdateMonAnDialog dialog = new UpdateMonAnDialog(
+                        (JFrame) SwingUtilities.getWindowAncestor(GUI_QuanLyMonAn.this),
+                        GUI_QuanLyMonAn.this,
+                        selectedMonAn
+                    );
+                    dialog.setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(GUI_QuanLyMonAn.this, "Vui lòng chọn món ăn để cập nhật.");
+                }
+            }
+        });
+        btnXoa.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				xoaMonAn();
+				
+			}
+		});
+        comboLoai.addActionListener(e -> {
+            String selectedLoai = (String) comboLoai.getSelectedItem();
+            int maLoai = mapLoai(selectedLoai);
 
+          //  System.out.println("Bạn đã chọn loại: " + selectedLoai + " - Mã loại: " + maLoai);
 
-       
+            List<MonAn> danhSachLoc;
+
+            try {
+                danhSachLoc = new MonAn_DAO().getAllMonAn();
+
+                for (MonAn m : danhSachLoc) {
+                   // System.out.println("Món: " + m.getTenMonAn() + " - Mã loại: " + m.getMaloai());
+                }
+
+                if (maLoai != -1) {
+                    danhSachLoc = danhSachLoc.stream()
+                        .filter(mon -> mon.getMaloai() == maLoai)
+                        .collect(Collectors.toList());
+                }
+
+                hienThiMonAn(danhSachLoc);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Lỗi khi tải dữ liệu món ăn");
+            }
+        });
+
         
+
+
+
+    }
+    
+//   
+    private int mapLoai(String tenLoai) {
+        return switch (tenLoai) {
+            case "Món Mới" -> 1;
+            case "Khai Vị" -> 2;
+            case "Lẩu" -> 3;
+            case "Heo-Gà-Bò" -> 4;
+            case "Hải Sản" -> 5;
+            case "Đồ uống" -> 6;
+            case "Món Tráng Miệng" -> 7;
+            default -> -1; // Trường hợp không khớp
+        };
     }
 
-    // Tạo JLabel cho từng mục menu
-    private JPanel createMenuItem(String text) {
-        JPanel item = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        item.setMaximumSize(new Dimension(180, 40));
-        item.setBackground(Color.CYAN);
+    private void hienThiMonAn(List<MonAn> danhSach) {
+    	foodListPanel.removeAll(); // Xóa món cũ
 
-        JLabel label = new JLabel(text);
-        label.setFont(new Font("Arial", Font.BOLD, 20));
-        item.add(label);
-        return item;
-    }
-
-    // --- Tạo danh sách món ăn ---
-    private JPanel createFoodList() {
-        JPanel foodListPanel = new JPanel();
-        foodListPanel.setLayout(new GridLayout(4, 3, 10, 10)); // 4 hàng, 3 cột
-        foodListPanel.setBackground(Color.WHITE);
-
-        // Thêm 12 món ăn có sẵn vào danh sách
-        for (int i = 0; i < tenMon.length; i++) {
-            JPanel foodCard = createFoodCard(tenMon[i], gia[i], duongDanAnh[i]);
-            foodListPanel.add(foodCard);
+        for (MonAn ma : danhSach) {
+            JPanel card = createFoodCard(ma); // tạo giao diện món ăn
+            foodListPanel.add(card);
         }
 
-        return foodListPanel;
+        foodListPanel.revalidate();
+        foodListPanel.repaint();
     }
 
+    
+    private void xoaMonAn() {
+        if (selectedMonAn == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn món ăn cần xóa!");
+            return;
+        }
 
-	// Tạo thẻ món ăn
-	private JPanel createFoodCard(String tenMon, String gia, String duongDanAnh) {
-	    JPanel card = new JPanel();
-	    card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-	    card.setPreferredSize(new Dimension(200, 250));
-	    card.setBackground(Color.WHITE);
-	    card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Bạn có chắc chắn muốn xóa món ăn này?",
+            "Xác nhận xóa",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            String maMonAn = selectedMonAn.getMaMonAn();
+            if (new MonAn_DAO().delete(maMonAn)) {
+                JOptionPane.showMessageDialog(this, "Xóa món ăn thành công!");
+                selectedMonAn = null; // reset
+                loadData(); // reload danh sách
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa món ăn thất bại!");
+            }
+        }
+    }
+
+    // Tạo JLabel cho menu bên trái
+//    private JPanel createMenuItem(String text) {
+//        JPanel item = new JPanel(new FlowLayout(FlowLayout.LEFT));
+//        item.setMaximumSize(new Dimension(180, 40));
+//        item.setBackground(Color.CYAN);
+//
+//        JLabel label = new JLabel(text);
+//        label.setFont(new Font("Arial", Font.BOLD, 20));
+//        item.add(label);
+//        return item;
+//    }
+
+    // Panel chứa danh sách món ăn
+    private JPanel createFoodList() {
+        JPanel foodList = new JPanel();
+        foodList.setLayout(new GridLayout(0, 4, 10, 10)); // tự động chia dòng
+        foodList.setBackground(Color.WHITE);
+        return foodList;
+    }
+
+    private JPanel lastSelectedCard = null;
+
+    private void highlightSelectedCard(JPanel selectedCard) {
+        if (lastSelectedCard != null) {
+            lastSelectedCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        }
+        selectedCard.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
+        lastSelectedCard = selectedCard;
+    }
+
+    private JPanel createFoodCard(MonAn monan) {
+        JPanel card = new JPanel();
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        card.setPreferredSize(new Dimension(200, 150));
+        card.setBackground(Color.WHITE);
+        card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+
+        // Lưu MonAn vào client property
+        card.putClientProperty("monAn", monan);
+
+        // Bắt sự kiện click để chọn
+        card.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                selectedMonAn = monan; // set biến toàn cục
+                highlightSelectedCard(card);
+            }
+        });
+
+        // Hình ảnh
+        JLabel lblImage = new JLabel();
+        lblImage.setAlignmentX(Component.CENTER_ALIGNMENT);
+        byte[] imgBytes = monan.gethinhAnh();
+        if (imgBytes != null) {
+            ImageIcon icon = new ImageIcon(imgBytes);
+            Image image = icon.getImage().getScaledInstance(200, 100, Image.SCALE_SMOOTH);
+            lblImage.setIcon(new ImageIcon(image));
+        } else {
+            lblImage.setText("Không có ảnh");
+        }
+        card.add(lblImage);
+
+        // Mã món
+        JLabel lblMaMon = new JLabel("Mã: " + monan.getMaMonAn());
+        lblMaMon.setFont(new Font("Arial", Font.PLAIN, 13));
+        lblMaMon.setForeground(Color.DARK_GRAY);
+        lblMaMon.setAlignmentX(Component.CENTER_ALIGNMENT);
+        card.add(lblMaMon);
+
+        // Tên món
+        JLabel lblTenMon = new JLabel(monan.getTenMonAn());
+        lblTenMon.setFont(new Font("Arial", Font.BOLD, 16));
+        lblTenMon.setAlignmentX(Component.CENTER_ALIGNMENT);
+        card.add(lblTenMon);
+
+        // Giá
+        JLabel lblGia = new JLabel(monan.getDonGia() + " VND");
+        lblGia.setFont(new Font("Arial", Font.PLAIN, 14));
+        lblGia.setForeground(Color.RED);
+        lblGia.setAlignmentX(Component.CENTER_ALIGNMENT);
+        card.add(lblGia);
+
+        return card;
+    }
+
+    // Load data từ SQL Server
+    public void loadData() {
+        foodListPanel.removeAll();
+
+        List<MonAn> list = null;
+        try {
+            list = new MonAn_DAO().getAllMonAn();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        for (MonAn mon : list) {
+            JPanel card = createFoodCard(mon); // Gọi đúng hàm với MonAn
+            foodListPanel.add(card);
+        }
 
 
-	    // Ảnh món ăn
-	   
-//	    ImageIcon icon = new ImageIcon(getClass().getResource("/view/image/"+ duongDanAnh)); // Sử dụng getClass().getResource để lấy ảnh từ thư mục resource
-//	    Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH); // Điều chỉnh kích thước ảnh
-//	    JLabel imgLabel = new JLabel(new ImageIcon(img)); // Tạo JLabel với ảnh
-//	    imgLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Canh giữa ảnh trong JPanel
-//	    card.add(imgLabel);
-	   
-	    URL imageUrl = getClass().getResource("/view/image/" + duongDanAnh);
-	    if (imageUrl == null) {
-	        System.out.println("Không tìm thấy hình ảnh: " + duongDanAnh);
-	    } else {
-	        ImageIcon icon = new ImageIcon(imageUrl);
-	        Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-	        JLabel imgLabel = new JLabel(new ImageIcon(img));
-	        imgLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-	        card.add(imgLabel);
-	    }
+        foodListPanel.revalidate();
+        foodListPanel.repaint();
+    }
 
+    // Main
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Quản Lý Món Ăn");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(1500, 900);
+            frame.setLocationRelativeTo(null);
 
-
-
-
-	    // Tên món ăn
-	    JLabel lblTenMon = new JLabel(tenMon);
-	    lblTenMon.setFont(new Font("Arial", Font.BOLD, 16));
-	    lblTenMon.setAlignmentX(Component.CENTER_ALIGNMENT);
-	    card.add(lblTenMon);
-
-	    // Giá
-	    JLabel lblGia = new JLabel(gia);
-	    lblGia.setFont(new Font("Arial", Font.PLAIN, 14));
-	    lblGia.setForeground(Color.RED);
-	    lblGia.setAlignmentX(Component.CENTER_ALIGNMENT);
-	    card.add(lblGia);
-	    
-
-	    return card;
-	}
-	
-	public void loadData() {
-	    foodListPanel.removeAll(); // Clear danh sách cũ
-
-	    List<MonAn> list = new ArrayList<MonAn>();
-		try {
-			list = MonAn_DAO.getAllMonAn();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} // Lấy từ DB
-	    for (MonAn mon : list) {
-	        JPanel card = createFoodCard(mon.getTenMonAn(), mon.getDonGia() + " VND", null);
-	        foodListPanel.add(card);
-	    }
-
-	    foodListPanel.revalidate();
-	    foodListPanel.repaint();
-	}
-
-
-                        
-
-	// Main chạy chương trình
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			JFrame frame = new JFrame("Quản Lý Món Ăn");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setSize(1200, 800);
-			frame.setLocationRelativeTo(null); // Canh giữa màn hình
-
-			GUI_QuanLyMonAn panel = new GUI_QuanLyMonAn();
-			frame.setContentPane(panel);
-
-			frame.setVisible(true);
-		});
-	}
+            GUI_QuanLyMonAn panel = new GUI_QuanLyMonAn();
+            frame.setContentPane(panel);
+            frame.setVisible(true);
+        });
+    }
 }

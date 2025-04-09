@@ -2,6 +2,9 @@ package GUI;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.swing.*;
 
@@ -25,16 +28,44 @@ public class CreateMonAnDialog extends javax.swing.JDialog {
         initComponents();
     }
 
+    private byte[] readImageToBytes(String path) {
+        try {
+            return Files.readAllBytes(Paths.get(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     private MonAn getInputFields() {
         String id = txtmaMonAn.getText().trim(); 
         String tenMonAn = txtTenMonAn.getText().trim();
-        double donGia = Double.parseDouble(txtDonGia.getText().trim());
-        int soLuong = Integer.parseInt(txtSoLuong.getText().trim());
+        String duongDan = txtDuongDanAnh.getText().trim();
         
 
-        return new MonAn(id, tenMonAn, donGia, soLuong);
+        if (tenMonAn.isEmpty() || txtDonGia.getText().trim().isEmpty() || txtSoLuong.getText().trim().isEmpty() || duongDan.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin.");
+            return null;
+        }
+
+        try {
+            double donGia = Double.parseDouble(txtDonGia.getText().trim());
+            int soLuong = Integer.parseInt(txtSoLuong.getText().trim());
+            byte[] hinhAnh = readImageToBytes(duongDan);
+            
+
+            if (hinhAnh == null) {
+                JOptionPane.showMessageDialog(this, "Không thể đọc ảnh từ đường dẫn.");
+                return null;
+            }
+
+            return new MonAn(id, tenMonAn, donGia, soLuong, hinhAnh);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Đơn giá và số lượng phải là số.");
+            return null;
+        }
     }
+
 
     private void initComponents() {
         jPanelTitle = new JPanel();
@@ -134,10 +165,13 @@ public class CreateMonAnDialog extends javax.swing.JDialog {
         btnAdd.setForeground(Color.BLACK);
         btnAdd.addActionListener((ActionEvent evt) -> {
             MonAn ma = getInputFields();
-            MA_DAO.insert(ma);
-            if (MA_GUI != null) MA_GUI.loadData();
-            dispose();
+            if (ma != null) {
+                MA_DAO.insert(ma);
+                if (MA_GUI != null) MA_GUI.loadData();
+                dispose();
+            }
         });
+
         jPanelButtons.add(btnAdd);
 
         getContentPane().add(jPanelButtons, java.awt.BorderLayout.SOUTH);
