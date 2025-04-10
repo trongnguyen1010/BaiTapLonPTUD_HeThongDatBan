@@ -1,4 +1,3 @@
-
 package GUI;
 
 import java.awt.EventQueue;
@@ -6,8 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import DAO.TaiKhoan_DAO;
+import DAO.TaiKhoanDAO;
 import Entity.TaiKhoan;
 
 public class GUI_FrmDangNhap extends JFrame {
@@ -124,8 +122,8 @@ public class GUI_FrmDangNhap extends JFrame {
             return;
         }
 
-        TaiKhoan_DAO taiKhoanDao = new TaiKhoan_DAO();
-        TaiKhoan tk = taiKhoanDao.getTaiKhoanTheoTen(tenDangNhap);
+        TaiKhoanDAO taiKhoanDao = new TaiKhoanDAO();
+        TaiKhoan tk = taiKhoanDao.getTaiKhoanTheoTenDangNhap(tenDangNhap);
 
         if (tk == null) {
             JOptionPane.showMessageDialog(this, "Tài khoản không đúng!\nVui lòng kiểm tra lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
