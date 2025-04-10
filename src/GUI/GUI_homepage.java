@@ -83,6 +83,10 @@ public class GUI_homepage extends JFrame {
 	private GUI_QuanLyBan QuanLyBan;
 	private GUI_QuanLyKhachHang QuanLyKhachHang;
 	private GUI_QuanLyNhanVien QuanLyNhanVien;
+	private GUI_TimKiemNhanVien TimKiemNhanVien;
+	private GUI_TimKiemKhachHang TimKiemKhachHang;
+	private GUI_QuanLyTaiKhoan QuanLyTaiKhoan;
+	private GUI_TimKiemTaiKhoan TimKiemTaiKhoan;
 	
 	
 	private void addButtonEffects(JButton button, Color hoverColor, Font hoverFont, Color defaultColor, Font defaultFont, Color activeColor) {
@@ -125,7 +129,7 @@ public class GUI_homepage extends JFrame {
 	public GUI_homepage() {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1440, 820);
+		setBounds(100, 100, 1455, 820);
 		contentPane = new JPanel();
 //		contentPane.setSize(new Dimension(1440, 800));
 		contentPane.setBounds(new Rectangle(0, 0, 1440, 800));
@@ -148,12 +152,12 @@ public class GUI_homepage extends JFrame {
 		lblTitle.setBounds(368, 10, 646, 60);
 		panel.add(lblTitle);
 		
-		JPanel panel_sidebar = new JPanel();
-		panel_sidebar.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_sidebar.setBackground(new Color(161, 227, 249));
-		panel_sidebar.setBounds(0, 119, 205, 680);
-		contentPane.add(panel_sidebar);
-		panel_sidebar.setLayout(null);
+//		JPanel panel_sidebar = new JPanel();
+//		panel_sidebar.setBorder(new LineBorder(new Color(0, 0, 0)));
+//		panel_sidebar.setBackground(new Color(161, 227, 249));
+//		panel_sidebar.setBounds(0, 119, 205, 680);
+//		contentPane.add(panel_sidebar);
+//		panel_sidebar.setLayout(null);
 		
 		// Tạo panel chứa menu
         JPanel menu_nav = new JPanel();
@@ -166,82 +170,17 @@ public class GUI_homepage extends JFrame {
         
         
         
-        
-//        JButton btnHome = new JButton("<html><center>Home</center></html>");
-//        btnHome.setIcon(new ImageIcon("src/view/icon/icon_taikhoan.png")); 
-//		btnHome.setFont(new Font("Segoe UI Black", Font.BOLD, 18));
-//		btnHome.setBorder(new LineBorder(new Color(0, 0, 0)));
-//		btnHome.setForeground(Color.BLACK);
-////		btnHome.setFocusPainted(false);
-//		btnHome.setBackground(defaultColor);
-//		btnHome.setPreferredSize(new Dimension(220, 50));
-////		btnHome.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Hiệu ứng chuột
-//		btnHome.setHorizontalTextPosition(SwingConstants.RIGHT); // Chữ bên phải icon
-//		btnHome.setVerticalTextPosition(SwingConstants.CENTER);  // Căn giữa icon & chữ
-//		btnHome.setIconTextGap(20); // Tạo khoảng cách giữa icon và chữ
-//        btnHome.addActionListener(new ActionListener() {
-//        	public void actionPerformed(ActionEvent e) {
-//        	}
-//        });
-//        menu_nav.add(btnHome);
-//        
-//        JButton btnTaiKhoan = new JButton("<html><center>Tài khoản</center></html>");
-//        btnTaiKhoan.setIcon(new ImageIcon("src/view/icon/icon_taikhoan.png")); 
-//		btnTaiKhoan.setFont(new Font("Segoe UI Black", Font.BOLD, 18));
-//		btnTaiKhoan.setBorder(new LineBorder(new Color(0, 0, 0)));
-//		btnTaiKhoan.setForeground(Color.BLACK);
-////		btnTaiKhoan.setFocusPainted(false);
-//		btnTaiKhoan.setBackground(defaultColor);
-//		btnTaiKhoan.setPreferredSize(new Dimension(232, 50));
-////		btnTaiKhoan.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Hiệu ứng chuột
-//		btnTaiKhoan.setHorizontalTextPosition(SwingConstants.RIGHT); // Chữ bên phải icon
-//		btnTaiKhoan.setVerticalTextPosition(SwingConstants.CENTER);  // Căn giữa icon & chữ
-//		btnTaiKhoan.setIconTextGap(20); // Tạo khoảng cách giữa icon và chữ
-//        btnTaiKhoan.addActionListener(new ActionListener() {
-//        	public void actionPerformed(ActionEvent e) {
-//        	}
-//        });
-//        menu_nav.add(btnTaiKhoan);
-//        
-//        JPopupMenu popupMenu = new JPopupMenu();
-//        // Tạo và thêm các JMenuItem vào popupMenu
-//        JMenuItem item1 = new JMenuItem("Thông tin cá nhân");
-//        item1.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                // Xử lý khi chọn "Thông tin cá nhân"
-//                System.out.println("Chọn: Thông tin cá nhân");
-//            }
-//        });
-//        popupMenu.add(item1);
-//        JMenuItem item2 = new JMenuItem("Đổi mật khẩu");
-//        item2.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                // Xử lý khi chọn "Đổi mật khẩu"
-//                System.out.println("Ch ọn: Đổi mật khẩu");
-//            }
-//        });
-//        popupMenu.add(item2);
-//     // Gán popupMenu cho btnTaiKhoan
-//        btnTaiKhoan.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mousePressed(MouseEvent e) {
-//                popupMenu.show(btnTaiKhoan, e.getX(), e.getY());
-//            }
-//        });
-		
-        
-        
         String[] menuItems = {"Trang Chủ", "Bàn", "Khách hàng", "Món ăn", "Hóa Đơn", "Nhân viên", "Tài Khoản"};
         Map<String, String[]> subMenuItems = new HashMap<>();
 
         // Khai báo menu con riêng cho từng nút
         subMenuItems.put("Trang Chủ", new String[]{"Dashboard", "Thống kê"});
-        subMenuItems.put("Bàn", new String[]{"Danh sách bàn", "Đặt bàn", "Hủy bàn"});
-        subMenuItems.put("Khách hàng", new String[]{"Quản lý khách hàng", "Danh sách khách"});
+        subMenuItems.put("Bàn", new String[]{"Quản lý bàn", "Đặt bàn", "Hủy bàn"});
+        subMenuItems.put("Khách hàng", new String[]{"Quản lý khách hàng", "Tìm kiếm khách hàng"});
         subMenuItems.put("Món ăn", new String[]{"Thực đơn", "Thêm món", "Sửa món"});
         subMenuItems.put("Hóa Đơn", new String[]{"Tạo hóa đơn", "Xem hóa đơn"});
-        subMenuItems.put("Nhân viên", new String[]{"Danh sách nhân viên", "Thêm nhân viên"});
-        subMenuItems.put("Tài Khoản", new String[]{"Đổi mật khẩu", "Đăng xuất"});
+        subMenuItems.put("Nhân viên", new String[]{"Quản lý nhân viên", "Tìm kiếm nhân viên"});
+        subMenuItems.put("Tài Khoản", new String[]{"Quản lý tài khoản", "Tìm kiếm tài khoản", "Đổi mật khẩu", "Đăng xuất"});
 
         
         
@@ -250,7 +189,7 @@ public class GUI_homepage extends JFrame {
         Show.setForeground(new Color(0, 0, 0));
         Show.setFont(new Font("Jokerman", Font.BOLD, 48));
         Show.setBorder(new LineBorder(new Color(0, 0, 0)));
-        Show.setBounds(205, 120, 1220, 700);
+        Show.setBounds(0, 120, 1440, 700);
         Show.setLayout(new CardLayout()); // Quan trọng: Cần đặt Layout trước khi thêm thành phần
 
         // 2. Thêm vào contentPane
@@ -259,9 +198,25 @@ public class GUI_homepage extends JFrame {
         // 3. Khởi tạo CardLayout sau khi JPanel đã sẵn sàng
         CardLayout = (CardLayout) Show.getLayout();
         
-        QuanLyKhachHang = new GUI_QuanLyKhachHang(); // Khởi tạo giao diện quản lý nhân viên
-        Show.add(QuanLyKhachHang, "KhachHang"); // Thêm vào CardLayout
+        QuanLyKhachHang = new GUI_QuanLyKhachHang(); // Khởi tạo giao diện
+        Show.add(QuanLyKhachHang, "QuanLyKhachHang"); // Thêm vào CardLayout
+        TimKiemKhachHang = new GUI_TimKiemKhachHang(); 
+        Show.add(TimKiemKhachHang, "TimKiemKhachHang"); 
         
+        QuanLyBan = new GUI_QuanLyBan();
+        Show.add(QuanLyBan, "QuanLyBan");
+        
+        QuanLyNhanVien = new GUI_QuanLyNhanVien(); 
+        Show.add(QuanLyNhanVien, "QuanLyNhanVien");
+        TimKiemNhanVien = new GUI_TimKiemNhanVien(); 
+        Show.add(TimKiemNhanVien, "TimKiemNhanVien"); 
+        
+        QuanLyTaiKhoan = new GUI_QuanLyTaiKhoan(); 
+        Show.add(QuanLyTaiKhoan, "QuanLyTaiKhoan");
+        TimKiemTaiKhoan = new GUI_TimKiemTaiKhoan(); 
+        Show.add(TimKiemTaiKhoan, "TimKiemTaiKhoan"); 
+        
+//     ----------------------------------------------------------------------------------
         for (String item : menuItems) {
             JButton menuButton = new JButton(item);
             menuButton.setBackground(new Color(161, 227, 249));
@@ -312,8 +267,9 @@ public class GUI_homepage extends JFrame {
                                 case "Dashboard":
                                     System.out.println("Chuyển đến Dashboard");
                                     break;
-                                case "Thống kê":
-                                    System.out.println("Mở trang thống kê");
+                                case "Quản lý bàn":
+                                	CardLayout.show(Show, "QuanLyBan");
+                                    System.out.println("Quản lý bàn");
                                     break;
                                 case "Đổi mật khẩu":
                                     System.out.println("Mở giao diện đổi mật khẩu");
@@ -322,8 +278,22 @@ public class GUI_homepage extends JFrame {
                                     System.out.println("Đăng xuất tài khoản");
                                     break;
                                 case "Quản lý khách hàng":
-                                	CardLayout.show(Show, "KhachHang"); // Chuyển sang giao diện Nhân viên
-                                    System.out.println("Quản lý khách hàng");
+                                	CardLayout.show(Show, "QuanLyKhachHang");
+                                    break;
+                                case "Tìm kiếm khách hàng":
+                                	CardLayout.show(Show, "TimKiemKhachHang");
+                                    break;
+                                case "Quản lý nhân viên":
+                                	CardLayout.show(Show, "QuanLyNhanVien");
+                                    break;
+                                case "Tìm kiếm nhân viên":
+                                	CardLayout.show(Show, "TimKiemNhanVien");
+                                    break;
+                                case "Quản lý tài khoản":
+                                	CardLayout.show(Show, "QuanLyTaiKhoan");
+                                    break;
+                                case "Tìm kiếm tài khoản":
+                                	CardLayout.show(Show, "TimKiemTaiKhoan");
                                     break;
                                 default:
                                     System.out.println("Hành động chưa được định nghĩa");
@@ -376,45 +346,6 @@ public class GUI_homepage extends JFrame {
         }
 
 
-
-        
-        
-//        ------------------------------------------------------------------------------------------------------------------------------
-		
-//		// Tạo icon từ file ảnh
-//		ImageIcon icon_qldatban = new ImageIcon(getClass().getResource("/view/icon/icon_qldatban.png"));
-//		
-//		JPanel panel_2 = new JPanel();
-//		panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
-//		panel_2.setBackground(new Color(161, 227, 249));
-//		panel_2.setBounds(220, 189, 1220, 611);
-//		
-//		contentPane.add(panel_2);
-//		panel_2.setLayout(null);
-//		//		HoaDon = new GUI_HoaDon();
-//				QuanLyKhachHang = new GUI_QuanLyKhachHang();
-//				QuanLyKhachHang.setBounds(8, 24, 1218, 698);
-//				panel_2.add(QuanLyKhachHang);
-//		ImageIcon icon = new ImageIcon(getClass().getResource("/view/image/image_homepage.png"));
-//		Image image = icon.getImage();
-//		Image scaledImage = image.getScaledInstance(900, 700, Image.SCALE_SMOOTH);
-////		----------------------------------------------------------------------
-//		Show = new JPanel();
-//		Show.setForeground(new Color(0, 0, 0));
-//		Show.setFont(new Font("Jokerman", Font.BOLD, 48));
-//		Show.setBorder(new LineBorder(new Color(0, 0, 0)));
-//		Show.setBounds(220, 100, 1220, 700);
-//		contentPane.add(Show);
-//		
-//		//Show pages
-//		Show.setLayout(new CardLayout());
-//		
-//		CardLayout = (CardLayout)Show.getLayout();
-//		QuanLyNhanVien = new GUI_QuanLyNhanVien();
-//		QuanLyBan = new GUI_QuanLyBan();
-//		
-//		Show.add(QuanLyBan,"QuanLyBan");
-//		Show.add(QuanLyNhanVien,"QuanLyNhanVien");
 	}
 	private static void addPopup(Component component, final JPopupMenu popup) {
 		component.addMouseListener(new MouseAdapter() {
@@ -434,4 +365,3 @@ public class GUI_homepage extends JFrame {
 		});
 	}
 }
-
