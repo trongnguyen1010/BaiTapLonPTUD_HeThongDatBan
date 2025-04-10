@@ -138,6 +138,7 @@ public class GUI_QuanLyMonAn extends JPanel {
 				
 			}
 		});
+        //
         comboLoai.addActionListener(e -> {
             String selectedLoai = (String) comboLoai.getSelectedItem();
             int maLoai = mapLoai(selectedLoai);

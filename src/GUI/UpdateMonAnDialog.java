@@ -19,6 +19,7 @@ public class UpdateMonAnDialog extends JDialog {
     private byte[] imageBytes = null;
     private MonAn monAn;
     private GUI_QuanLyMonAn parent;
+    //
 
     public UpdateMonAnDialog(JFrame parentFrame, GUI_QuanLyMonAn parent, MonAn monAn) {
         super(parentFrame, "Cập nhật món ăn", true);

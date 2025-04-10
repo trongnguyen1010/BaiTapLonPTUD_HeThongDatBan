@@ -27,7 +27,7 @@ public class CreateMonAnDialog extends javax.swing.JDialog {
         this.MA_GUI = MA_GUI;
         initComponents();
     }
-
+//
     private byte[] readImageToBytes(String path) {
         try {
             return Files.readAllBytes(Paths.get(path));
