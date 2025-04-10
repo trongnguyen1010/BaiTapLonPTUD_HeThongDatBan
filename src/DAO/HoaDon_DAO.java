@@ -166,7 +166,7 @@ public class HoaDon_DAO {
             if (rs.next()) {
                 hd = new HoaDon();
                 hd.set(rs.getString("MaHoaDon"));
-                hd.setThoiGian(rs.getDate("NgayLap"));
+                hd.setMaHoaDon(id);
                 hd.setPhuongThuc(rs.getString("PhuongThuc"));
 
 //                NhanVien nv = new NhanVien();

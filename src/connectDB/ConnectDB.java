@@ -21,7 +21,7 @@ public class ConnectDB {
     public void connect() throws SQLException {
         if (con == null || con.isClosed()) {
             con = DriverManager.getConnection(url, user, pass);
-//            System.out.println("Connection established");
+           System.out.println("Connection established");
         }
     }
 
