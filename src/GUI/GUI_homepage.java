@@ -87,6 +87,7 @@ public class GUI_homepage extends JFrame {
 	private GUI_TimKiemKhachHang TimKiemKhachHang;
 	private GUI_QuanLyTaiKhoan QuanLyTaiKhoan;
 	private GUI_TimKiemTaiKhoan TimKiemTaiKhoan;
+	private GUI_QuanLyMonAn QuanLyMonAn;
 	
 	
 	private void addButtonEffects(JButton button, Color hoverColor, Font hoverFont, Color defaultColor, Font defaultFont, Color activeColor) {
@@ -177,7 +178,7 @@ public class GUI_homepage extends JFrame {
         subMenuItems.put("Trang Chủ", new String[]{"Dashboard", "Thống kê"});
         subMenuItems.put("Bàn", new String[]{"Quản lý bàn", "Đặt bàn", "Hủy bàn"});
         subMenuItems.put("Khách hàng", new String[]{"Quản lý khách hàng", "Tìm kiếm khách hàng"});
-        subMenuItems.put("Món ăn", new String[]{"Thực đơn", "Thêm món", "Sửa món"});
+        subMenuItems.put("Món ăn", new String[]{"Quản lý món ăn", "Sửa món"});
         subMenuItems.put("Hóa Đơn", new String[]{"Tạo hóa đơn", "Xem hóa đơn"});
         subMenuItems.put("Nhân viên", new String[]{"Quản lý nhân viên", "Tìm kiếm nhân viên"});
         subMenuItems.put("Tài Khoản", new String[]{"Quản lý tài khoản", "Tìm kiếm tài khoản", "Đổi mật khẩu", "Đăng xuất"});
@@ -214,7 +215,10 @@ public class GUI_homepage extends JFrame {
         QuanLyTaiKhoan = new GUI_QuanLyTaiKhoan(); 
         Show.add(QuanLyTaiKhoan, "QuanLyTaiKhoan");
         TimKiemTaiKhoan = new GUI_TimKiemTaiKhoan(); 
-        Show.add(TimKiemTaiKhoan, "TimKiemTaiKhoan"); 
+        Show.add(TimKiemTaiKhoan, "TimKiemTaiKhoan");
+        
+        QuanLyMonAn = new GUI_QuanLyMonAn();
+        Show.add(QuanLyMonAn, "QuanLyMonAn");
         
 //     ----------------------------------------------------------------------------------
         for (String item : menuItems) {
@@ -293,6 +297,12 @@ public class GUI_homepage extends JFrame {
                                 	CardLayout.show(Show, "QuanLyTaiKhoan");
                                     break;
                                 case "Tìm kiếm tài khoản":
+                                	CardLayout.show(Show, "TimKiemTaiKhoan");
+                                    break;
+                                case "Quản lý món ăn":
+                                	CardLayout.show(Show, "QuanLyMonAn");
+                                    break;
+                                case "Tìm kiếm ":
                                 	CardLayout.show(Show, "TimKiemTaiKhoan");
                                     break;
                                 default:
