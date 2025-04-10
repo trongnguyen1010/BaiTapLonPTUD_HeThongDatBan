@@ -26,7 +26,7 @@ public class GUI_FrmDangNhap extends JFrame {
                 e.printStackTrace();
             }
         });
-    }
+    }//
 
     public GUI_FrmDangNhap() {
         setTitle("Đăng Nhập - Quản Lý Nhà Hàng");

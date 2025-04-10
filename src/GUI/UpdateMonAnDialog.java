@@ -81,7 +81,7 @@ public class UpdateMonAnDialog extends JDialog {
                     }
                 }
             }
-        });
+        });//
         panel.add(btnChonAnh);
 
         // Nút lưu

@@ -42,7 +42,7 @@ public class UpdateKhachHangDialog extends javax.swing.JDialog {
         String sdt = txtSdt.getText().trim();
         String email = txtSdt.getText().trim();
         String gioiTinh = cboxGioiTinh.getSelectedItem().toString();
-
+//
         return new KhachHang(id, hoTen, email, gioiTinh, sdt);
     }
     @SuppressWarnings("unchecked")

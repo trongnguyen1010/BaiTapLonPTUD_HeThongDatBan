@@ -10,7 +10,7 @@ public class MonAn {
   private int soLuong;
   private byte[] hinhAnh;
   private int maloai;
- 
+ //
   
   public MonAn(String maMonAn, String tenMonAn, double donGia, int soLuong,byte[] hinhAnh ) {
 	super();

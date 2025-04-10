@@ -45,7 +45,7 @@ public class GUI_FrmCapnhatNhanVien extends JPanel {
                 e.printStackTrace();
             }
         });
-    }
+    }//
 
     public GUI_FrmCapnhatNhanVien() {
         setLayout(null);

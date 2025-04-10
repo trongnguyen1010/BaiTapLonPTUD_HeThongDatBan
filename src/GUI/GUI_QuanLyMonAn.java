@@ -144,7 +144,7 @@ public class GUI_QuanLyMonAn extends JPanel {
             int maLoai = mapLoai(selectedLoai);
 
           //  System.out.println("Bạn đã chọn loại: " + selectedLoai + " - Mã loại: " + maLoai);
-
+//
             List<MonAn> danhSachLoc;
 
             try {

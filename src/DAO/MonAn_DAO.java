@@ -157,7 +157,7 @@ public class MonAn_DAO {
                int maLoai = rs.getInt("MaLoai");
 
 
-            
+            //
 
                // Tạo đối tượng MonAn và thêm vào danh sách
                MonAn monAn = new MonAn(maMA, tenMA, dongia,soluong,hinhAnh);

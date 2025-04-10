@@ -29,7 +29,7 @@ public class CreateKhachHangDialog extends javax.swing.JDialog {
         initComponents();
         this.KH_GUI = KH_GUI;
     }
-    
+    //
     private KhachHang getInputFields() {
         String id = RandomGenerator.getRandomId();
         String hoTen = txtHoTen.getText().trim();

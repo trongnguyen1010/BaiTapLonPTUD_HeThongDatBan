@@ -63,7 +63,7 @@ public class GUI_homepage extends JFrame {
 				}
 			}
 		});
-	}
+	}//
 
 	/**
 	 * Create the frame.

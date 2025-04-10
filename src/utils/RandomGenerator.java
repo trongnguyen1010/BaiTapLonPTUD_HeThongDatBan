@@ -14,7 +14,7 @@ public class RandomGenerator {
             char randomChar = alphabet.charAt(index);
             sb.append(randomChar);
         }
-
+//
         return sb.toString();
     }
 }

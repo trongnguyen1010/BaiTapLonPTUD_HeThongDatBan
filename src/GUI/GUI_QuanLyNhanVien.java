@@ -45,7 +45,7 @@ public class GUI_QuanLyNhanVien extends JPanel {
 		panel_1.setBounds(0, 0, 1220, 130);
 		add(panel_1);
 		panel_1.setLayout(null);
-
+//
 
 		
 		

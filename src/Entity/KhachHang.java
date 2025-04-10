@@ -6,7 +6,7 @@ public class KhachHang {
     private String email;
     private String gioiTinh;
     private String sdt;
-
+//
     // Constructors
     public KhachHang() {}
     
