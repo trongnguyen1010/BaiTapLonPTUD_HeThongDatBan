@@ -4,11 +4,13 @@ public class Ban {
     private String maBan;
     private String trangThai;
     private String maKhuVuc; // Có thể null nếu bàn không thuộc khu vực nào
-
-    public Ban(String maBan, String trangThai, String maKhuVuc) {
+    private int soChoNgoi;
+    
+    public Ban(String maBan, String trangThai, String maKhuVuc, int soChoNgoi) {
         this.maBan = maBan;
         this.trangThai = trangThai;
         this.maKhuVuc = maKhuVuc;
+        this.setSoChoNgoi(soChoNgoi);
     }
 
     // Getters và Setters
@@ -32,4 +34,12 @@ public class Ban {
     public void setMaKhuVuc(String maKhuVuc) {
         this.maKhuVuc = maKhuVuc;
     }
+
+	public int getSoChoNgoi() {
+		return soChoNgoi;
+	}
+
+	public void setSoChoNgoi(int soChoNgoi) {
+		this.soChoNgoi = soChoNgoi;
+	}
 }

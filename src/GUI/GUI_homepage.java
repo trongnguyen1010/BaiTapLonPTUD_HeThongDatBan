@@ -88,6 +88,7 @@ public class GUI_homepage extends JFrame {
 	private GUI_QuanLyTaiKhoan QuanLyTaiKhoan;
 	private GUI_TimKiemTaiKhoan TimKiemTaiKhoan;
 	private GUI_QuanLyMonAn QuanLyMonAn;
+	private GUI_DatBan DatBan;
 	
 	
 	private void addButtonEffects(JButton button, Color hoverColor, Font hoverFont, Color defaultColor, Font defaultFont, Color activeColor) {
@@ -206,6 +207,8 @@ public class GUI_homepage extends JFrame {
         
         QuanLyBan = new GUI_QuanLyBan();
         Show.add(QuanLyBan, "QuanLyBan");
+        DatBan = new GUI_DatBan();
+        Show.add(DatBan, "DatBan");
         
         QuanLyNhanVien = new GUI_QuanLyNhanVien(); 
         Show.add(QuanLyNhanVien, "QuanLyNhanVien");
@@ -274,6 +277,10 @@ public class GUI_homepage extends JFrame {
                                 case "Quản lý bàn":
                                 	CardLayout.show(Show, "QuanLyBan");
                                     System.out.println("Quản lý bàn");
+                                    break;
+                                case "Đặt bàn":
+                                	CardLayout.show(Show, "DatBan");
+                                    System.out.println("Đặt bàn");
                                     break;
                                 case "Đổi mật khẩu":
                                     System.out.println("Mở giao diện đổi mật khẩu");

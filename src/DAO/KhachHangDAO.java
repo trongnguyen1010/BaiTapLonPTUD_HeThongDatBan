@@ -19,6 +19,31 @@ public class KhachHangDAO {
             e.printStackTrace();
         }
     }
+    public KhachHang getKhachHangByPhone(String sdt) {
+        KhachHang kh = null;
+        String sql = "SELECT MaKhachHang, TenKhachHang, Email, GioiTinh, SDT FROM KhachHang WHERE SDT = ?";
+        try {
+            Connection con = ConnectDB.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, sdt);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String maKH = rs.getString("MaKhachHang");
+                String tenKH = rs.getString("TenKhachHang");
+                String email = rs.getString("Email");
+                int gioiTinhBit = rs.getInt("GioiTinh");
+                String gioiTinh = (gioiTinhBit == 1) ? "Nam" : "Nữ";
+                String soDienThoai = rs.getString("SDT");
+                kh = new KhachHang(maKH, tenKH, email, gioiTinh, soDienThoai);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return kh;
+    }
+
 
     public KhachHang getKhachHangById(String maKhachHang) {
         ConnectDB.getInstance();
