@@ -227,4 +227,76 @@ public class NhanVienDAO {
         }
         return listNhanVien;
     }
+    public List<NhanVien> timKiemNhanVien(String hoTen, String sdt, String email, String gioiTinh, String chucVu) {
+        List<NhanVien> danhSachNhanVien = new ArrayList<>();
+        ConnectDB.getInstance();
+        Connection con = ConnectDB.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            StringBuilder query = new StringBuilder("SELECT * FROM NhanVien WHERE 1=1");
+
+            if (hoTen != null && !hoTen.isEmpty()) {
+                query.append(" AND TenNhanVien LIKE ?");
+            }
+            if (sdt != null && !sdt.isEmpty()) {
+                query.append(" AND SDT LIKE ?");
+            }
+            if (email != null && !email.isEmpty()) {
+                query.append(" AND Email LIKE ?");
+            }
+            if (gioiTinh != null && !gioiTinh.isEmpty()) {
+                query.append(" AND GioiTinh = ?");
+            }
+            if (chucVu != null && !chucVu.isEmpty()) {
+                query.append(" AND ChucVu = ?");
+            }
+
+            stmt = con.prepareStatement(query.toString());
+            int index = 1;
+
+            if (hoTen != null && !hoTen.isEmpty()) {
+                stmt.setString(index++, "%" + hoTen + "%");
+            }
+            if (sdt != null && !sdt.isEmpty()) {
+                stmt.setString(index++, "%" + sdt + "%");
+            }
+            if (email != null && !email.isEmpty()) {
+                stmt.setString(index++, "%" + email + "%");
+            }
+            if (gioiTinh != null && !gioiTinh.isEmpty()) {
+                int gioiTinhBit = gioiTinh.equalsIgnoreCase("Nam") ? 1 : 0;
+                stmt.setInt(index++, gioiTinhBit);
+            }
+            if (chucVu != null && !chucVu.isEmpty()) {
+                stmt.setString(index++, chucVu);
+            }
+
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                String maNV = rs.getString("MaNhanVien");
+                String tenNV = rs.getString("TenNhanVien");
+                String emailNV = rs.getString("Email");
+                String chucVuNV = rs.getString("ChucVu");
+                int gioiTinhBit = rs.getInt("GioiTinh");
+                String gioiTinhNV = (gioiTinhBit == 1) ? "Nam" : "Nữ";
+                String sdtNV = rs.getString("SDT");
+
+                NhanVien nv = new NhanVien(maNV, tenNV, emailNV, chucVuNV, gioiTinhNV, sdtNV);
+                danhSachNhanVien.add(nv);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return danhSachNhanVien;
+    }
+
 } 
