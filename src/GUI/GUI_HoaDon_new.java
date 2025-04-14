@@ -323,9 +323,17 @@ public class GUI_HoaDon_new extends JPanel {
 
         // ===== NORTH: Thanh điều khiển thêm/xóa món =====
         JPanel panelControls = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+     
         JComboBox<String> comboMonAn = new JComboBox<>(new String[]{
-                "Phở bò", "Bún chả", "Cơm tấm", "Gà rán"
-        });
+        	    "Tất cả",
+        	    "Món Mới",
+        	    "Khai Vị",
+        	    "Lẩu",
+        	    "Heo-Gà-Bò",
+        	    "Hải Sản",
+        	    "Đồ uống",
+        	    "Món Tráng Miệng"
+        	});
         comboMonAn.setPreferredSize(new Dimension(150, 25));
         panelControls.add(comboMonAn);
 
@@ -445,10 +453,10 @@ public class GUI_HoaDon_new extends JPanel {
        // Sử dụng txtMaHD đã được khai báo bên ngoài
 
        
-        PdfWriter.getInstance(document, new FileOutputStream("src/Hoadon/HoaDon.pdf"));
+        PdfWriter.getInstance(document, new FileOutputStream("src/utils/HoaDon.pdf"));
         document.open();
 
-        BaseFont bf = BaseFont.createFont("src/font/NotoSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        BaseFont bf = BaseFont.createFont("src/utils/NotoSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
         com.itextpdf.text.Font fontNormal = new com.itextpdf.text.Font(bf, 12, com.itextpdf.text.Font.NORMAL);
         com.itextpdf.text.Font fontBold = new com.itextpdf.text.Font(bf, 12, com.itextpdf.text.Font.BOLD);
@@ -464,7 +472,7 @@ public class GUI_HoaDon_new extends JPanel {
         document.add(storeName);
 
         document.add(new Paragraph("Địa chỉ: 49 Nguyễn Văn Bảo, Phường 4, Gò Vấp, TP.HCM", fontNormal));
-        document.add(new Paragraph("Điện thoại: 0345678910", fontNormal));
+        document.add(new Paragraph("Điện thoại: 0346851496", fontNormal));
         document.add(new Paragraph(" "));
         Paragraph hoaDonTitle = new Paragraph("HÓA ĐƠN THANH TOÁN", fontHeading);
         hoaDonTitle.setAlignment(Element.ALIGN_CENTER);
@@ -526,9 +534,9 @@ public class GUI_HoaDon_new extends JPanel {
         double thueVAT = tongTien * 0.10;
         double tongThanhToan = tongTien + thueVAT;
 
-        document.add(new Paragraph("Tổng tiền: " + String.format("%.0f VNĐ", tongTien), fontNormal));
-        document.add(new Paragraph("Thuế VAT (10%): " + String.format("%.0f VNĐ", thueVAT), fontNormal));
-        Paragraph tongCong = new Paragraph("Tổng cộng: " + String.format("%.0f VNĐ", tongThanhToan), fontBold);
+        document.add(new Paragraph("Tổng tiền: " + tongTien, fontNormal));
+        document.add(new Paragraph("Thuế VAT (10%): " + String.format("%.000f VNĐ", thueVAT), fontNormal));
+        Paragraph tongCong = new Paragraph("Tổng cộng: " + String.format("%.000f VNĐ", tongThanhToan), fontBold);
         tongCong.setAlignment(Element.ALIGN_RIGHT);
         document.add(tongCong);
 
@@ -542,9 +550,7 @@ public class GUI_HoaDon_new extends JPanel {
     }
 
 
-    
    
-
 
 
     public static void main(String[] args) {
