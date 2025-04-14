@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 
 import javax.swing.ImageIcon;
 
+import java.awt.Color;
 import java.util.List;
 
 import javax.swing.table.DefaultTableModel;
@@ -39,7 +40,7 @@ public class GUI_QuanLyNhanVien extends JPanel {
 		jButton4 = new javax.swing.JButton();
 		jButton3 = new javax.swing.JButton();
 		jComboBox1 = new javax.swing.JComboBox<>();
-		jTextField1 = new javax.swing.JTextField();
+		txtTimKiem = new RoundTextField(20, Color.WHITE, Color.GRAY);// Thay thế jTextField1
 		jPanel2 = new javax.swing.JPanel();
 		jTextField2 = new javax.swing.JTextField();
 		jScrollPane1 = new javax.swing.JScrollPane();
@@ -119,12 +120,26 @@ public class GUI_QuanLyNhanVien extends JPanel {
 			}
 		});
 
-		jTextField1.setText("Tìm kiếm");
-		jTextField1.setMaximumSize(new java.awt.Dimension(362, 65));
-		jTextField1.setMinimumSize(new java.awt.Dimension(362, 65));
-		jTextField1.setName(""); // NOI18N
-		jTextField1.setPreferredSize(new java.awt.Dimension(362, 65));
-		jTextField1.addActionListener(new java.awt.event.ActionListener() {
+		txtTimKiem.setText("Tìm kiếm");
+		txtTimKiem.setMaximumSize(new java.awt.Dimension(362, 65));
+		txtTimKiem.setMinimumSize(new java.awt.Dimension(362, 65));
+		txtTimKiem.setName(""); // NOI18N
+		txtTimKiem.setPreferredSize(new java.awt.Dimension(362, 65));
+		
+		 // Thêm sự kiện focus để xử lý placeholder
+        txtTimKiem.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (txtTimKiem.getText().equals("Tìm kiếm")) {
+                    txtTimKiem.setText("");
+                }
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (txtTimKiem.getText().isEmpty()) {
+                    txtTimKiem.setText("Tìm kiếm");
+                }
+            }
+        });
+		txtTimKiem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				jTextField1ActionPerformed(evt);
 			}
@@ -144,7 +159,7 @@ public class GUI_QuanLyNhanVien extends JPanel {
 				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 				.addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
 				.addGap(58, 58, 58)
-				.addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+				.addComponent(txtTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 				.addGap(61, 61, 61))
 		);
 		jPanel1Layout.setVerticalGroup(
@@ -161,7 +176,7 @@ public class GUI_QuanLyNhanVien extends JPanel {
 						.addGap(27, 27, 27)
 						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 							.addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-							.addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+							.addComponent(txtTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
 				.addContainerGap(24, Short.MAX_VALUE))
 		);
 
@@ -319,7 +334,7 @@ public class GUI_QuanLyNhanVien extends JPanel {
 	}                                          
 
 	private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {                                            
-		String searchText = jTextField1.getText().trim();
+		String searchText = txtTimKiem.getText().trim();
 		String searchType = (String) jComboBox1.getSelectedItem();
 		
 		DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
@@ -374,7 +389,7 @@ public class GUI_QuanLyNhanVien extends JPanel {
 	private javax.swing.JPanel jPanel2;
 	private javax.swing.JScrollPane jScrollPane1;
 	private javax.swing.JTable jTable1;
-	private javax.swing.JTextField jTextField1;
+	private RoundTextField txtTimKiem; // Thay thế jTextField1
 	private javax.swing.JTextField jTextField2;
 	// End of variables declaration                   
 }

@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package GUI;
+import java.awt.Color;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -42,7 +43,7 @@ public class GUI_QuanLyKhachHang extends javax.swing.JPanel {
         jButton4 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
-        jTextField1 = new javax.swing.JTextField();
+        txtTimKiem = new RoundTextField(20, Color.WHITE, Color.GRAY);// Thay thế jTextField1
         jPanel2 = new javax.swing.JPanel();
         jTextField2 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -113,38 +114,38 @@ public class GUI_QuanLyKhachHang extends javax.swing.JPanel {
         });
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mã khách hàng", "Họ tên", "Số điện thoại" }));
-        jComboBox1.setMaximumSize(new java.awt.Dimension(184, 65));
-        jComboBox1.setMinimumSize(new java.awt.Dimension(184, 65));
-        jComboBox1.setPreferredSize(new java.awt.Dimension(184, 65));
+        jComboBox1.setMaximumSize(new java.awt.Dimension(150, 30));
+        jComboBox1.setMinimumSize(new java.awt.Dimension(150,40));
+        jComboBox1.setPreferredSize(new java.awt.Dimension(150, 30));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
             }
         });
 
-        jTextField1.setText("Tìm kiếm");
-        jTextField1.setMaximumSize(new java.awt.Dimension(362, 65));
-        jTextField1.setMinimumSize(new java.awt.Dimension(362, 65));
-        jTextField1.setName(""); // NOI18N
-        jTextField1.setPreferredSize(new java.awt.Dimension(362, 65));
+        txtTimKiem.setText("Tìm kiếm");
+        txtTimKiem.setMaximumSize(new java.awt.Dimension(362, 65));
+        txtTimKiem.setMinimumSize(new java.awt.Dimension(362, 65));
+        txtTimKiem.setName(""); // NOI18N
+        txtTimKiem.setPreferredSize(new java.awt.Dimension(362, 65));
         
         // Thêm sự kiện focus để xử lý placeholder
-        jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
+        txtTimKiem.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                if (jTextField1.getText().equals("Tìm kiếm")) {
-                    jTextField1.setText("");
+                if (txtTimKiem.getText().equals("Tìm kiếm")) {
+                    txtTimKiem.setText("");
                 }
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
-                if (jTextField1.getText().isEmpty()) {
-                    jTextField1.setText("Tìm kiếm");
+                if (txtTimKiem.getText().isEmpty()) {
+                    txtTimKiem.setText("Tìm kiếm");
                 }
             }
         });
         
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        txtTimKiem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                txtTimKiemActionPerformed(evt);
             }
         });
 
@@ -162,7 +163,7 @@ public class GUI_QuanLyKhachHang extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(58, 58, 58)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(61, 61, 61))
         );
         jPanel1Layout.setVerticalGroup(
@@ -179,7 +180,7 @@ public class GUI_QuanLyKhachHang extends javax.swing.JPanel {
                         .addGap(27, 27, 27)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txtTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(24, Short.MAX_VALUE))
         );
 
@@ -341,8 +342,8 @@ public class GUI_QuanLyKhachHang extends javax.swing.JPanel {
         // TODO add your handling code here:
     }                                          
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {                                            
-        String searchText = jTextField1.getText().trim();
+    private void txtTimKiemActionPerformed(java.awt.event.ActionEvent evt) {                                            
+        String searchText = txtTimKiem.getText().trim();
         
         // Kiểm tra nếu là chữ "Tìm kiếm" thì coi như không có từ khóa tìm kiếm
         if (searchText.equals("Tìm kiếm")) {
@@ -400,7 +401,7 @@ public class GUI_QuanLyKhachHang extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private RoundTextField txtTimKiem; // Thay thế jTextField1
     private javax.swing.JTextField jTextField2;
     // End of variables declaration                   
 }
