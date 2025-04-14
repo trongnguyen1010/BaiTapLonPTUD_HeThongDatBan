@@ -3,15 +3,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package GUI;
+import java.awt.Color;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 
 import DAO.NhanVienDAO;
 import Entity.NhanVien;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
 import javax.swing.GroupLayout;
 
 /**
@@ -38,9 +41,10 @@ public class GUI_TimKiemNhanVien extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
+        jButton1 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jComboBox1 = new javax.swing.JComboBox<>();
-        jTextField1 = new javax.swing.JTextField();
+        txtTimKiem = new RoundTextField(20, Color.WHITE, Color.GRAY);// Thay thế jTextField1
         jPanel2 = new javax.swing.JPanel();
         jTextField2 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -69,41 +73,80 @@ public class GUI_TimKiemNhanVien extends javax.swing.JPanel {
             }
         });
 
-        jTextField1.setText("Tìm kiếm");
-        jTextField1.setMaximumSize(new java.awt.Dimension(362, 65));
-        jTextField1.setMinimumSize(new java.awt.Dimension(362, 65));
-        jTextField1.setName(""); // NOI18N
-        jTextField1.setPreferredSize(new java.awt.Dimension(362, 65));
+        jButton1.setBackground(new java.awt.Color(161, 227, 249));
+        jButton1.setIcon(new ImageIcon(GUI_TimKiemKhachHang.class.getResource("/view/icon/icon_tim.png")));
+        jButton1.setText("TÌM KIẾM NÂNG CAO");
+        jButton1.setAlignmentY(0.0F);
+        jButton1.setBorderPainted(false);
+        jButton1.setContentAreaFilled(false);
+        jButton1.setDefaultCapable(false);
+        jButton1.setFocusPainted(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        btnReset = new JButton();
+        btnReset.setVerticalTextPosition(SwingConstants.BOTTOM);
+        btnReset.setVerticalAlignment(SwingConstants.TOP);
+        btnReset.setText("RESET");
+        btnReset.setIcon(new ImageIcon(GUI_TimKiemKhachHang.class.getResource("/view/icon/reset.png")));
+        btnReset.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnReset.setFocusPainted(false);
+        btnReset.setDefaultCapable(false);
+        btnReset.setContentAreaFilled(false);
+        btnReset.setBorderPainted(false);
+        btnReset.setBackground(new Color(161, 227, 249));
+        btnReset.setAlignmentY(0.0f);
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	btnResetActionPerformed(evt);
+            }
+        });
+
+        txtTimKiem.setText("Tìm kiếm");
+        txtTimKiem.setMaximumSize(new java.awt.Dimension(362, 65));
+        txtTimKiem.setMinimumSize(new java.awt.Dimension(362, 65));
+        txtTimKiem.setName(""); // NOI18N
+        txtTimKiem.setPreferredSize(new java.awt.Dimension(362, 65));
         
         // Thêm sự kiện focus để xử lý placeholder
-        jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
+        txtTimKiem.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                if (jTextField1.getText().equals("Tìm kiếm")) {
-                    jTextField1.setText("");
+                if (txtTimKiem.getText().equals("Tìm kiếm")) {
+                    txtTimKiem.setText("");
                 }
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
-                if (jTextField1.getText().isEmpty()) {
-                    jTextField1.setText("Tìm kiếm");
+                if (txtTimKiem.getText().isEmpty()) {
+                    txtTimKiem.setText("Tìm kiếm");
                 }
             }
         });
         
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        txtTimKiem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                txtTimKiemActionPerformed(evt);
             }
         });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1Layout.setHorizontalGroup(
-        	jPanel1Layout.createParallelGroup(Alignment.LEADING)
+        	jPanel1Layout.createParallelGroup(Alignment.TRAILING)
         		.addGroup(jPanel1Layout.createSequentialGroup()
-        			.addGap(83)
+        			.addGap(42)
+        			.addComponent(jButton1)
+        			.addGap(37)
+        			.addComponent(btnReset, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.RELATED, 255, Short.MAX_VALUE)
         			.addComponent(jComboBox1, GroupLayout.PREFERRED_SIZE, 184, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.RELATED, 360, Short.MAX_VALUE)
-        			.addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        			.addGap(231))
+        			.addGap(41)
+        			.addComponent(txtTimKiem, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        			.addGap(44))
         );
         jPanel1Layout.setVerticalGroup(
         	jPanel1Layout.createParallelGroup(Alignment.LEADING)
@@ -111,8 +154,14 @@ public class GUI_TimKiemNhanVien extends javax.swing.JPanel {
         			.addGap(27)
         			.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
         				.addComponent(jComboBox1, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-        			.addContainerGap(24, Short.MAX_VALUE))
+        				.addComponent(txtTimKiem, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+        			.addContainerGap(38, Short.MAX_VALUE))
+        		.addGroup(jPanel1Layout.createSequentialGroup()
+        			.addGap(34)
+        			.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
+        				.addComponent(jButton1, GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
+        				.addComponent(btnReset, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE))
+        			.addGap(22))
         );
         jPanel1.setLayout(jPanel1Layout);
 
@@ -233,12 +282,21 @@ public class GUI_TimKiemNhanVien extends javax.swing.JPanel {
         );
     }// </editor-fold>                        
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+         TimKiemNhanVienDialog dialog = new TimKiemNhanVienDialog(null, true, this);
+         dialog.setVisible(true);
+	}
+    
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {
+    	loadData();
+	}
+
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {                                           
         // TODO add your handling code here:
     }                                          
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {                                             
-        String searchText = jTextField1.getText().trim();
+    private void txtTimKiemActionPerformed(java.awt.event.ActionEvent evt) {                                             
+        String searchText = txtTimKiem.getText().trim();
         
         // Kiểm tra nếu là chữ "Tìm kiếm" thì coi như không có từ khóa tìm kiếm
         if (searchText.equals("Tìm kiếm")) {
@@ -288,12 +346,32 @@ public class GUI_TimKiemNhanVien extends javax.swing.JPanel {
             });
         }
     }
+
+    public void hienThiKetQuaTimKiem(List<NhanVien> ketQua) {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0); // Xóa dữ liệu cũ
+    
+        int stt = 1;
+        for (NhanVien nv : ketQua) {
+            model.addRow(new Object[]{
+                stt++,
+                nv.getMaNhanVien(),
+                nv.getTen(),
+                nv.getSdt(),
+                nv.getEmail(),
+                nv.getGioiTinh(),
+                nv.getChucVu()
+            });
+        }
+    }
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private RoundTextField txtTimKiem; // Thay thế jTextField1
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnReset;
     // End of variables declaration                   
-} 
+}

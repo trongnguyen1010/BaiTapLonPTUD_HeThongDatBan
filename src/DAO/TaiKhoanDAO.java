@@ -251,6 +251,70 @@ public class TaiKhoanDAO {
         return listTaiKhoan;
     }
     
+    public List<TaiKhoan> timKiemTaiKhoan(String tenNhanVien, String tenDangNhap, String chucVu) {
+        ConnectDB.getInstance();
+        Connection con = ConnectDB.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<TaiKhoan> listTaiKhoan = new ArrayList<>();
+
+        try {
+            String sql = "SELECT tk.MaTaiKhoan, tk.TenDangNhap, tk.MatKhau, nv.* " +
+                         "FROM TaiKhoan tk JOIN NhanVien nv ON tk.MaNhanVien = nv.MaNhanVien " +
+                         "WHERE 1=1";
+
+            if (tenNhanVien != null && !tenNhanVien.trim().isEmpty()) {
+                sql += " AND nv.TenNhanVien LIKE ?";
+            }
+            if (tenDangNhap != null && !tenDangNhap.trim().isEmpty()) {
+                sql += " AND tk.TenDangNhap LIKE ?";
+            }
+            if (chucVu != null && !chucVu.trim().isEmpty()) {
+                sql += " AND nv.ChucVu LIKE ?";
+            }
+
+            stmt = con.prepareStatement(sql);
+
+            int paramIndex = 1;
+            if (tenNhanVien != null && !tenNhanVien.trim().isEmpty()) {
+                stmt.setString(paramIndex++, "%" + tenNhanVien + "%");
+            }
+            if (tenDangNhap != null && !tenDangNhap.trim().isEmpty()) {
+                stmt.setString(paramIndex++, "%" + tenDangNhap + "%");
+            }
+            if (chucVu != null && !chucVu.trim().isEmpty()) {
+                stmt.setString(paramIndex++, "%" + chucVu + "%");
+            }
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String maTaiKhoan = rs.getString("MaTaiKhoan");
+                String user = rs.getString("TenDangNhap");
+                String pass = rs.getString("MatKhau");
+
+                NhanVien nv = new NhanVien();
+                nv.setMaNhanVien(rs.getString("MaNhanVien"));
+                nv.setTen(rs.getString("TenNhanVien"));
+                nv.setEmail(rs.getString("Email"));
+                nv.setChucVu(rs.getString("ChucVu"));
+                nv.setGioiTinh(rs.getInt("GioiTinh") == 1 ? "Nam" : "Nữ");
+                nv.setSdt(rs.getString("SDT"));
+
+                TaiKhoan tk = new TaiKhoan(maTaiKhoan, nv, user, pass);
+                listTaiKhoan.add(tk);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rs, stmt);
+        }
+
+        return listTaiKhoan;
+    }
+
+    
     private void close(ResultSet rs, PreparedStatement stmt) {
         try {
             if (rs != null) rs.close();

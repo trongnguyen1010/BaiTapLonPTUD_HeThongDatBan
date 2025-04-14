@@ -246,4 +246,70 @@ public class KhachHangDAO {
         return listKhachHang;
     }
 
+    public List<KhachHang> timKiemKhachHang(String hoTen, String sdt, String email, String gioiTinh) {
+        List<KhachHang> danhSachKhachHang = new ArrayList<>();
+        ConnectDB.getInstance();
+        Connection con = ConnectDB.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            StringBuilder query = new StringBuilder("SELECT * FROM KhachHang WHERE 1=1");
+
+            if (hoTen != null && !hoTen.isEmpty()) {
+                query.append(" AND TenKhachHang LIKE ?");
+            }
+            if (sdt != null && !sdt.isEmpty()) {
+                query.append(" AND SDT LIKE ?");
+            }
+            if (email != null && !email.isEmpty()) {
+                query.append(" AND Email LIKE ?");
+            }
+            if (gioiTinh != null && !gioiTinh.isEmpty()) {
+                query.append(" AND GioiTinh = ?");
+            }
+
+            stmt = con.prepareStatement(query.toString());
+            int index = 1;
+
+            if (hoTen != null && !hoTen.isEmpty()) {
+                stmt.setString(index++, "%" + hoTen + "%");
+            }
+            if (sdt != null && !sdt.isEmpty()) {
+                stmt.setString(index++, "%" + sdt + "%");
+            }
+            if (email != null && !email.isEmpty()) {
+                stmt.setString(index++, "%" + email + "%");
+            }
+            if (gioiTinh != null && !gioiTinh.isEmpty()) {
+                // Chuyển đổi "Nam" thành 1 và "Nữ" thành 0
+                int gioiTinhBit = gioiTinh.equalsIgnoreCase("Nam") ? 1 : 0;
+                stmt.setInt(index++, gioiTinhBit);
+            }
+
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                String maKH = rs.getString("MaKhachHang");
+                String tenKH = rs.getString("TenKhachHang");
+                String emailKH = rs.getString("Email");
+                int gioiTinhBit = rs.getInt("GioiTinh");
+                String gioiTinhKH = (gioiTinhBit == 1) ? "Nam" : "Nữ";
+                String sdtKH = rs.getString("SDT");
+
+                KhachHang kh = new KhachHang(maKH, tenKH, emailKH, gioiTinhKH, sdtKH);
+                danhSachKhachHang.add(kh);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return danhSachKhachHang;
+    }
+
 }
