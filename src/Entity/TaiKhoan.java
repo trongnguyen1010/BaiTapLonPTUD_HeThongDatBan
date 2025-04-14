@@ -1,55 +1,56 @@
 package Entity;
 
 public class TaiKhoan {
-    private String maTaiKhoan;
-    private NhanVien nhanVien; 
-    private String tenDangNhap;
-    private String matKhau;
+	private String maTaiKhoan;
+	private NhanVien nhanVien;
+	private String tenDangNhap;
+	private String matKhau;
 
-    // Constructors
-    public TaiKhoan() {}
-    
-    public TaiKhoan(String maTaiKhoan) {
-    	this.maTaiKhoan = maTaiKhoan;
-    }
+	// Constructors
+	public TaiKhoan() {
+	}
 
-    public TaiKhoan(String maTaiKhoan, NhanVien nhanVien, String tenDangNhap, String matKhau) {
-        this.maTaiKhoan = maTaiKhoan;
-        this.nhanVien = nhanVien;
-        this.tenDangNhap = tenDangNhap;
-        this.matKhau = matKhau;
-    }
+	public TaiKhoan(String maTaiKhoan) {
+		this.maTaiKhoan = maTaiKhoan;
+	}
 
-    // Getters and Setters
-    public String getMaTaiKhoan() {
-        return maTaiKhoan;
-    }
+	public TaiKhoan(String maTaiKhoan, NhanVien nhanVien, String tenDangNhap, String matKhau) {
+		this.maTaiKhoan = maTaiKhoan;
+		this.nhanVien = nhanVien;
+		this.tenDangNhap = tenDangNhap;
+		this.matKhau = matKhau;
+	}
 
-    public void setMaTaiKhoan(String maTaiKhoan) {
-        this.maTaiKhoan = maTaiKhoan;
-    }
+	// Getters and Setters
+	public String getMaTaiKhoan() {
+		return maTaiKhoan;
+	}
 
-    public NhanVien getNhanVien() {
-        return nhanVien;
-    }
+	public void setMaTaiKhoan(String maTaiKhoan) {
+		this.maTaiKhoan = maTaiKhoan;
+	}
 
-    public void setNhanVien(NhanVien nhanVien) {
-        this.nhanVien = nhanVien;
-    }
+	public NhanVien getNhanVien() {
+		return nhanVien;
+	}
 
-    public String getTenDangNhap() {
-        return tenDangNhap;
-    }
+	public void setNhanVien(NhanVien nhanVien) {
+		this.nhanVien = nhanVien;
+	}
 
-    public void setTenDangNhap(String tenDangNhap) {
-        this.tenDangNhap = tenDangNhap;
-    }
+	public String getTenDangNhap() {
+		return tenDangNhap;
+	}
 
-    public String getMatKhau() {
-        return matKhau;
-    }
+	public void setTenDangNhap(String tenDangNhap) {
+		this.tenDangNhap = tenDangNhap;
+	}
 
-    public void setMatKhau(String matKhau) {
-        this.matKhau = matKhau;
-    }
+	public String getMatKhau() {
+		return matKhau;
+	}
+
+	public void setMatKhau(String matKhau) {
+		this.matKhau = matKhau;
+	}
 }

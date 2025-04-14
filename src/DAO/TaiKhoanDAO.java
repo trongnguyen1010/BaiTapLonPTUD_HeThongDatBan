@@ -314,7 +314,7 @@ public class TaiKhoanDAO {
         return listTaiKhoan;
     }
 
-    
+ 
     private void close(ResultSet rs, PreparedStatement stmt) {
         try {
             if (rs != null) rs.close();
@@ -323,4 +323,4 @@ public class TaiKhoanDAO {
             e.printStackTrace();
         }
     }
-} 
+}
