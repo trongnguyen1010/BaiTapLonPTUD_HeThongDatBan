@@ -1,27 +1,41 @@
 package GUI;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 
 import Entity.MonAn;
+import Entity.NhanVien;
+import Entity.KhachHang;
+import DAO.NhanVienDAO;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Font;
-
+import java.awt.Image;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
-
+import utils.RandomGenerator;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.itextpdf.text.Document;
-import com.itextpdf.text.Font;
+import com.itextpdf.text.Font ; // ❌ Java không hỗ trợ alias trong import (chỉ có trong Kotlin/C#/Python)
+
 
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -36,6 +50,17 @@ public class GUI_HoaDon_new extends JPanel {
     private List<MonAn> dsMonAnTrongHoaDon = new ArrayList<>();
     private DefaultTableModel modelMonAnHoaDon;
     private JTable table;
+ // Biến toàn cục
+    private JTextField txtMaThuoc, txtTenThuoc, txtDonGia,txtMaHD,txtNgayLap;
+    private JLabel txtHinhAnh;
+    
+    private NhanVienDAO NhanVienDAO=new NhanVienDAO();
+    private  JComboBox<String> cbNhanVien;
+    private JTextField txtKhachHang;
+    
+
+   
+
 
     public GUI_HoaDon_new() {
         setLayout(new BorderLayout(0, 0));
@@ -158,11 +183,12 @@ public class GUI_HoaDon_new extends JPanel {
         JPanel centerSplitPanel = new JPanel(new GridLayout(1, 2));
 
         // ===== LEFT: Bảng danh sách món ăn =====
-        String[] columnNames = {"Mã", "Tên món", "Đơn giá", "Số lượng", "Thành tiền"};
+        String[] columnNames = {"Mã", "Tên món", "Đơn giá", "Số lượng", "Thành tiền", "Ảnh"};
         modelMonAnHoaDon = new DefaultTableModel(columnNames, 0);
         table = new JTable(modelMonAnHoaDon);
         JScrollPane scrollPane = new JScrollPane(table);
         centerSplitPanel.add(scrollPane);
+
 
         // ===== RIGHT: Thông tin hóa đơn =====
         JPanel invoiceInfoPanel = new JPanel();
@@ -170,39 +196,92 @@ public class GUI_HoaDon_new extends JPanel {
         invoiceInfoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         invoiceInfoPanel.setBackground(Color.WHITE);
 
+     // Tạo mã hóa đơn ngẫu nhiên
+        String randomId = RandomGenerator.getRandomId(); // Tạo mã ngẫu nhiên cho hóa đơn
+
+        // Khởi tạo panel và JTextField cho mã hóa đơn
         invoiceInfoPanel.add(Box.createVerticalStrut(5));
         JPanel maHDPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         maHDPanel.setBackground(Color.WHITE);
         maHDPanel.add(new JLabel("Mã Hóa Đơn: "));
-        JTextField txtMaHD = new JTextField("HD001", 10);
-        txtMaHD.setEditable(false);
-        txtMaHD.setBorder(null);
-        txtMaHD.setBackground(Color.WHITE);
-        txtMaHD.setFont(new Font("Roboto", Font.PLAIN, 14));
+
+        // Tạo JTextField và gán giá trị mã hóa đơn ngẫu nhiên
+        txtMaHD = new JTextField(randomId, 10); // Thay đổi từ "HD001" thành randomId
+        txtMaHD.setEditable(false); // Không cho phép chỉnh sửa mã hóa đơn
+        txtMaHD.setBorder(null); // Không có viền
+        txtMaHD.setBackground(Color.WHITE); // Màu nền trắng
+        txtMaHD.setFont(new Font("Roboto", Font.PLAIN, 14)); // Đặt font chữ
+
+        // Thêm vào panel
         maHDPanel.add(txtMaHD);
         invoiceInfoPanel.add(maHDPanel);
+
+           //ngày lập
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
         invoiceInfoPanel.add(Box.createVerticalStrut(10));
         JPanel ngayLapPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         ngayLapPanel.setBackground(Color.WHITE);
         ngayLapPanel.add(new JLabel("Ngày Lập: "));
-        JTextField txtNgayLap = new JTextField("11/04/2025", 10);
+        txtNgayLap = new JTextField(currentDate, 10); // Gán ngày hiện tại vào đây
+        txtNgayLap.setEditable(false); // Nếu bạn không muốn cho người dùng chỉnh sửa
+        txtNgayLap.setBorder(null);
+        txtNgayLap.setBackground(Color.WHITE);
+        txtNgayLap.setFont(new Font("Roboto", Font.PLAIN, 14));
         ngayLapPanel.add(txtNgayLap);
         invoiceInfoPanel.add(ngayLapPanel);
 
+     // Giả sử bạn có danh sách nhân viên (List<NhanVien>)
+        List<NhanVien> dsNhanVien = null;
+        // Lấy danh sách nhân viên từ NhanVienDAO
+		dsNhanVien = NhanVienDAO.getAllNhanVien();
+
+        // ComboBox nhân viên
+        cbNhanVien = new JComboBox<>();
+
+        // Duyệt qua danh sách nhân viên và thêm vào ComboBox
+        if (dsNhanVien != null) {
+            for (NhanVien nv : dsNhanVien) {
+                cbNhanVien.addItem(nv.getTen()); // 
+            }
+        }
+
+        // Thiết lập giá trị mặc định (nếu cần)
+        if (dsNhanVien != null && !dsNhanVien.isEmpty()) {
+            cbNhanVien.setSelectedIndex(0);  
+        }
+
+        // Tạo panel cho nhân viên và thêm vào invoiceInfoPanel
         invoiceInfoPanel.add(Box.createVerticalStrut(10));
         JPanel nhanVienPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         nhanVienPanel.setBackground(Color.WHITE);
         nhanVienPanel.add(new JLabel("Nhân Viên: "));
-        JComboBox<String> cbNhanVien = new JComboBox<>(new String[]{"Nguyễn Văn A", "Trần Thị B", "Lê Văn C"});
-        cbNhanVien.setSelectedIndex(0);
         nhanVienPanel.add(cbNhanVien);
         invoiceInfoPanel.add(nhanVienPanel);
+
+     // Tạo panel cho khách hàng
+        invoiceInfoPanel.add(Box.createVerticalStrut(10));
+
+        // Tạo panel cho tên khách hàng
+        JPanel khachHangPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        khachHangPanel.setBackground(Color.WHITE);
+
+        // Tạo và thêm JLabel cho tên khách hàng
+        khachHangPanel.add(new JLabel("Khách Hàng: "));
+   
+        // Tạo JTextField để nhập tên khách hàng
+         txtKhachHang = new JTextField();
+         txtKhachHang.setPreferredSize(new Dimension(200, 30));// Chiều dài của JTextField là 20 ký tự
+        khachHangPanel.add(txtKhachHang);
+
+        // Thêm panel vào invoiceInfoPanel
+        invoiceInfoPanel.add(khachHangPanel);
+
 
         invoiceInfoPanel.add(Box.createVerticalStrut(10));
         JPanel tongTienPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         tongTienPanel.setBackground(Color.WHITE);
-        JLabel lblTongTien = new JLabel("Tổng tiền: 0 VNĐ");
+        JLabel lblTongTien = new JLabel("Tổng tiền:");
         
         lblTongTien.setForeground(Color.RED);
         tongTienPanel.add(lblTongTien);
@@ -255,9 +334,33 @@ public class GUI_HoaDon_new extends JPanel {
 
         JButton btnXoaMon = new JButton("Xóa");
         panelControls.add(btnXoaMon);
+        btnXoaMon.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	
+                int selectedRow = table.getSelectedRow(); // đúng
+
+                if (selectedRow != -1) {
+                    dsMonAnTrongHoaDon.remove(selectedRow); // Xóa trong danh sách
+                    capNhatBangMonAnHoaDon();               // Cập nhật bảng
+                } else {
+                    JOptionPane.showMessageDialog(null, "Vui lòng chọn món ăn cần xóa.");
+                }
+            }
+        });
+
+
 
         JButton btnReset = new JButton("Reset");
         panelControls.add(btnReset);
+        btnReset.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Xóa toàn bộ dữ liệu trong bảng
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+                model.setRowCount(0); // Xóa sạch tất cả dòng
+            }
+        });
+
 
         panelSouth.add(panelControls, BorderLayout.NORTH);
         panelSouth.add(centerSplitPanel, BorderLayout.CENTER);
@@ -265,78 +368,176 @@ public class GUI_HoaDon_new extends JPanel {
         btnThemMon.addActionListener(e -> {
             CreateHoaDonMADialog dialog = new CreateHoaDonMADialog(this, dsMonAnTrongHoaDon);
             dialog.setVisible(true);
+            
             capNhatBangMonAnHoaDon();  // Cập nhật bảng món ăn
               
         });
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow >= 0) {
+                    // Lấy dữ liệu từ model
+                    String maMon = table.getValueAt(selectedRow, 0).toString();
+                    String tenMon = table.getValueAt(selectedRow, 1).toString();
+                    String donGia = table.getValueAt(selectedRow, 2).toString();
+                    ImageIcon imageIcon = (ImageIcon) table.getValueAt(selectedRow, 5); // Lấy ImageIcon trực tiếp từ cột ảnh
+
+                    // Gán dữ liệu lên các textfield
+                    txtMaThuoc.setText(maMon);
+                    txtTenThuoc.setText(tenMon);
+                    txtDonGia.setText(donGia);
+
+                    // Hiển thị hình ảnh
+                    if (imageIcon != null) {
+                        Image img = imageIcon.getImage().getScaledInstance(
+                            txtHinhAnh.getWidth(), txtHinhAnh.getHeight(), Image.SCALE_SMOOTH);
+                        txtHinhAnh.setIcon(new ImageIcon(img));
+                    } else {
+                        txtHinhAnh.setIcon(null); // Xóa ảnh cũ nếu không có ảnh
+                        System.out.println("Không tìm thấy ảnh.");
+                    }
+                }
+            }
+        });
+
+
+
     }
+    
+    
 
     public void capNhatBangMonAnHoaDon() {
         modelMonAnHoaDon.setRowCount(0); // Reset bảng
 
         // Duyệt qua danh sách món ăn trong hóa đơn
         for (MonAn mon : dsMonAnTrongHoaDon) {
+            // Lấy dữ liệu hình ảnh dưới dạng byte[]
+            byte[] hinhAnhPath = mon.gethinhAnh();
+
+            // Nếu có hình ảnh (kiểm tra nếu mảng byte không rỗng)
+            ImageIcon icon = null;
+            if (hinhAnhPath != null && hinhAnhPath.length > 0) {
+                icon = new ImageIcon(hinhAnhPath);  // Tạo ImageIcon từ byte[]
+                Image img = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);  // Điều chỉnh kích thước ảnh
+                icon = new ImageIcon(img);  // Tạo lại ImageIcon với kích thước mới
+            }
+
             modelMonAnHoaDon.addRow(new Object[]{
-                mon.getMaMonAn(),  // Mã món ăn
-                mon.getTenMonAn(), // Tên món ăn
-                mon.getDonGia(),   // Đơn giá
-                mon.getSoLuong(),                 // Số lượng
-                mon.getDonGia() * 1 // Thành tiền (đơn giá * số lượng)
+                mon.getMaMonAn(),               // Mã món ăn
+                mon.getTenMonAn(),              // Tên món ăn
+                mon.getDonGia(),                // Đơn giá
+                mon.getSoLuong(),               // Số lượng
+                mon.getDonGia() * mon.getSoLuong(), // Thành tiền
+                icon                           // Hình ảnh
             });
         }
-
-        // Cập nhật tổng tiền sau khi thêm món ăn vào bảng
-       
     }
+
+
+
 
 
     private void exportHoaDonToPDF() throws Exception {
         // Tạo tài liệu PDF
-        com.itextpdf.text.Document document = new com.itextpdf.text.Document();
-        PdfWriter.getInstance(document, new FileOutputStream("HoaDon.pdf"));
+    	String tenKhachHang = txtKhachHang.getText(); 
+        Document document = new Document();
+       // Sử dụng txtMaHD đã được khai báo bên ngoài
+
+       
+        PdfWriter.getInstance(document, new FileOutputStream("src/Hoadon/HoaDon.pdf"));
         document.open();
 
-        // Thêm tiêu đề
-        com.itextpdf.text.Font fontTitle = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20); // Sử dụng font Helvetica với kiểu Bold và kích thước 20
-        Paragraph title = new Paragraph("HÓA ĐƠN THANH TOÁN", fontTitle);
-        title.setAlignment(com.itextpdf.text.Element.ALIGN_CENTER);
-        document.add(title);
-        document.add(new Paragraph(" ")); // Dòng trắng
+        BaseFont bf = BaseFont.createFont("src/font/NotoSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
-        // Tạo bảng cho danh sách món ăn
-        PdfPTable table = new PdfPTable(5); // 5 cột: Mã, Tên, Đơn giá, SL, Thành tiền
+        com.itextpdf.text.Font fontNormal = new com.itextpdf.text.Font(bf, 12, com.itextpdf.text.Font.NORMAL);
+        com.itextpdf.text.Font fontBold = new com.itextpdf.text.Font(bf, 12, com.itextpdf.text.Font.BOLD);
+        com.itextpdf.text.Font fontItalic = new com.itextpdf.text.Font(bf, 12, com.itextpdf.text.Font.ITALIC);
+        com.itextpdf.text.Font fontHeading = new com.itextpdf.text.Font(bf, 14, com.itextpdf.text.Font.BOLD);
+        com.itextpdf.text.Font fontTitle = new com.itextpdf.text.Font(bf, 20, com.itextpdf.text.Font.BOLD);
+
+
+
+        // ======= HEADER (Thông tin cửa hàng) =======
+        Paragraph storeName = new Paragraph("Nhà Hàng N2", fontTitle);
+        storeName.setAlignment(Element.ALIGN_CENTER);
+        document.add(storeName);
+
+        document.add(new Paragraph("Địa chỉ: 49 Nguyễn Văn Bảo, Phường 4, Gò Vấp, TP.HCM", fontNormal));
+        document.add(new Paragraph("Điện thoại: 0345678910", fontNormal));
+        document.add(new Paragraph(" "));
+        Paragraph hoaDonTitle = new Paragraph("HÓA ĐƠN THANH TOÁN", fontHeading);
+        hoaDonTitle.setAlignment(Element.ALIGN_CENTER);
+        document.add(hoaDonTitle);
+        document.add(new Paragraph(" "));
+
+        // ======= THÔNG TIN HÓA ĐƠN =======
+        document.add(new Paragraph("Mã hóa đơn: " + txtMaHD.getText(), fontNormal));
+        document.add(new Paragraph("Ngày lập: " + txtNgayLap.getText(), fontNormal));
+        try {
+           
+
+            // Kiểm tra nếu cbNhanVien có giá trị được chọn
+            String nhanVien = (cbNhanVien.getSelectedItem() != null) ? cbNhanVien.getSelectedItem().toString() : "Chưa chọn nhân viên";
+
+            // Thêm vào PDF
+            document.add(new Paragraph("Nhân viên: " + nhanVien, fontNormal));
+
+           
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+     // Thêm tên khách hàng vào tài liệu PDF
+        document.add(new Paragraph("Khách hàng: " + tenKhachHang, fontNormal));
+
+        document.add(new Paragraph(" "));
+
+        // ======= TABLE DANH SÁCH MÓN ĂN =======
+        PdfPTable table = new PdfPTable(5); // 5 cột
         table.setWidthPercentage(100);
+        table.setSpacingBefore(10f);
+        table.setSpacingAfter(10f);
+        float[] columnWidths = {1.5f, 4f, 2f, 1.5f, 2.5f};
+        table.setWidths(columnWidths);
+        table.setHorizontalAlignment(Element.ALIGN_CENTER);
 
         // Header của bảng
-        table.addCell("Mã món");
-        table.addCell("Tên món");
-        table.addCell("Đơn giá");
-        table.addCell("Số lượng");
-        table.addCell("Thành tiền");
+        table.addCell(new PdfPCell(new Paragraph("Mã món", fontBold)));
+        table.addCell(new PdfPCell(new Paragraph("Tên món", fontBold)));
+        table.addCell(new PdfPCell(new Paragraph("Đơn giá", fontBold)));
+        table.addCell(new PdfPCell(new Paragraph("Số lượng", fontBold)));
+        table.addCell(new PdfPCell(new Paragraph("Thành tiền", fontBold)));
 
-        // Duyệt danh sách món ăn
+        // Dữ liệu món ăn
         for (MonAn mon : dsMonAnTrongHoaDon) {
-            table.addCell(mon.getMaMonAn());
-            table.addCell(mon.getTenMonAn());
-            table.addCell(String.format("%.0f VNĐ", mon.getDonGia()));
-            table.addCell(String.valueOf(mon.getSoLuong()));
-            table.addCell(String.format("%.0f VNĐ", mon.getDonGia() * mon.getSoLuong()));
+            table.addCell(new PdfPCell(new Paragraph(mon.getMaMonAn(), fontNormal)));
+            table.addCell(new PdfPCell(new Paragraph(mon.getTenMonAn(), fontNormal)));
+            table.addCell(new PdfPCell(new Paragraph(String.format("%.0f VNĐ", mon.getDonGia()), fontNormal)));
+            table.addCell(new PdfPCell(new Paragraph(String.valueOf(mon.getSoLuong()), fontNormal)));
+            table.addCell(new PdfPCell(new Paragraph(String.format("%.0f VNĐ", mon.getDonGia() * mon.getSoLuong()), fontNormal)));
         }
 
         document.add(table);
 
-        // Tính tổng tiền
+        // ======= FOOTER (Tổng tiền + Thuế) =======
         double tongTien = dsMonAnTrongHoaDon.stream()
                 .mapToDouble(mon -> mon.getDonGia() * mon.getSoLuong())
                 .sum();
+        double thueVAT = tongTien * 0.10;
+        double tongThanhToan = tongTien + thueVAT;
 
-        // Thêm dòng tổng tiền vào tài liệu
+        document.add(new Paragraph("Tổng tiền: " + String.format("%.0f VNĐ", tongTien), fontNormal));
+        document.add(new Paragraph("Thuế VAT (10%): " + String.format("%.0f VNĐ", thueVAT), fontNormal));
+        Paragraph tongCong = new Paragraph("Tổng cộng: " + String.format("%.0f VNĐ", tongThanhToan), fontBold);
+        tongCong.setAlignment(Element.ALIGN_RIGHT);
+        document.add(tongCong);
+
         document.add(new Paragraph(" "));
-        com.itextpdf.text.Font fontTotal = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14);  // Sử dụng font Helvetica cho phần tổng tiền với kiểu Bold và kích thước 14
-        Paragraph totalParagraph = new Paragraph("Tổng tiền: " + String.format("%.0f VNĐ", tongTien), fontTotal);
-        totalParagraph.setAlignment(com.itextpdf.text.Element.ALIGN_RIGHT);
-        document.add(totalParagraph);
+        Paragraph camOn = new Paragraph("Xin cảm ơn và hẹn gặp lại Quý khách!", fontItalic);
+        camOn.setAlignment(Element.ALIGN_CENTER);
+        document.add(camOn);
 
-        // Đóng tài liệu
+        // ======= KẾT THÚC =======
         document.close();
     }
 
