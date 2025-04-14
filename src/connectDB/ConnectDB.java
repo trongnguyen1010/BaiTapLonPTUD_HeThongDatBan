@@ -10,7 +10,7 @@ public class ConnectDB {
 
     private final String url = "jdbc:sqlserver://localhost:1433;databaseName=QuanLyNhaHang;encrypt=false;trustServerCertificate=true";
     private final String user = "sa";
-    private final String pass = "sapassword";
+    private final String pass = "11111";
 
     // Singleton instance
     public static ConnectDB getInstance() {
