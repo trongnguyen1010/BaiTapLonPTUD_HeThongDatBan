@@ -223,7 +223,8 @@ public class GUI_QuanLyMonAn extends JPanel {
 	// Panel chứa danh sách món ăn
 	private JPanel createFoodList() {
 		JPanel foodList = new JPanel();
-		foodList.setLayout(new GridLayout(0, 4, 10, 10)); // tự động chia dòng
+//		foodList.setLayout(new GridLayout(0, 4, 10, 10)); // tự động chia dòng
+		foodList.setLayout(new WrapLayout(FlowLayout.LEFT, 10, 10));
 		foodList.setBackground(Color.WHITE);
 		return foodList;
 	}
@@ -241,7 +242,8 @@ public class GUI_QuanLyMonAn extends JPanel {
 	private JPanel createFoodCard(MonAn monan) {
 		JPanel card = new JPanel();
 		card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-		card.setPreferredSize(new Dimension(200, 150));
+		card.setPreferredSize(new Dimension(270, 200));
+//		card.setMaximumSize(new Dimension(400, 250));
 		card.setBackground(Color.WHITE);
 		card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 
@@ -262,7 +264,7 @@ public class GUI_QuanLyMonAn extends JPanel {
 		byte[] imgBytes = monan.gethinhAnh();
 		if (imgBytes != null) {
 			ImageIcon icon = new ImageIcon(imgBytes);
-			Image image = icon.getImage().getScaledInstance(200, 100, Image.SCALE_SMOOTH);
+			Image image = icon.getImage().getScaledInstance(270, 140, Image.SCALE_SMOOTH);
 			lblImage.setIcon(new ImageIcon(image));
 		} else {
 			lblImage.setText("Không có ảnh");
