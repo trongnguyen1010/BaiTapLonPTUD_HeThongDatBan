@@ -56,37 +56,72 @@ public class Ban_DAO {
         return booked;
     }
 
-    // Đặt bàn, trả về true nếu đặt thành công
-    public boolean datBan(String maBan, Date ngayDat, String startTime, String endTime, String maKhachHang) {
-        boolean success = false;
-        Connection con = ConnectDB.getConnection();
-        PreparedStatement ps = null;
-        try {
-            // Sinh mã phiếu đặt dựa vào thời gian, ví dụ
-            String maPhieu = "PD" + System.currentTimeMillis();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String dateStr = sdf.format(ngayDat);
-            Timestamp bookingStart = Timestamp.valueOf(dateStr + " " + startTime + ":00");
-            Timestamp bookingEnd = Timestamp.valueOf(dateStr + " " + endTime + ":00");
+//    // Đặt bàn, trả về true nếu đặt thành công
+//    public boolean datBan(String maBan, Date ngayDat, String startTime, String endTime, String maKhachHang) {
+//        boolean success = false;
+//        Connection con = ConnectDB.getConnection();
+//        PreparedStatement ps = null;
+//        try {
+//            // Sinh mã phiếu đặt dựa vào thời gian, ví dụ
+//            String maPhieu = "PD" + System.currentTimeMillis();
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//            String dateStr = sdf.format(ngayDat);
+//            Timestamp bookingStart = Timestamp.valueOf(dateStr + " " + startTime + ":00");
+//            Timestamp bookingEnd = Timestamp.valueOf(dateStr + " " + endTime + ":00");
+//
+//            String sql = "INSERT INTO PhieuDatBan (MaPhieu, ThoiGianDat, ThoiGianKetThuc, MaBan, MaKhachHang) "
+//                       + "VALUES (?, ?, ?, ?, ?)";
+//            ps = con.prepareStatement(sql);
+//            ps.setString(1, maPhieu);
+//            ps.setTimestamp(2, bookingStart);
+//            ps.setTimestamp(3, bookingEnd);
+//            ps.setString(4, maBan);
+//            ps.setString(5, maKhachHang); // Chú ý: giá trị này phải tồn tại trong bảng KhachHang
+//            int n = ps.executeUpdate();
+//            success = n > 0;
+//        } catch (SQLException | IllegalArgumentException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try { if (ps != null) ps.close(); } catch (SQLException e) { e.printStackTrace(); }
+//        }
+//        return success;
+//    }
 
-            String sql = "INSERT INTO PhieuDatBan (MaPhieu, ThoiGianDat, ThoiGianKetThuc, MaBan, MaKhachHang) "
-                       + "VALUES (?, ?, ?, ?, ?)";
-            ps = con.prepareStatement(sql);
+ // Đặt bàn, trả về mã phiếu nếu thành công, ngược lại trả về null
+    public String datBan(String maBan, Date ngayDat, String startTime, String endTime, String maKhachHang) {
+        // Tạo mã phiếu duy nhất
+        String maPhieu = "PD" + System.currentTimeMillis();
+        // Chuẩn bị ngày-thời gian
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateStr = sdf.format(ngayDat);
+        Timestamp bookingStart = Timestamp.valueOf(dateStr + " " + startTime + ":00");
+        Timestamp bookingEnd   = Timestamp.valueOf(dateStr + " " + endTime   + ":00");
+
+        String sql = "INSERT INTO PhieuDatBan (MaPhieu, ThoiGianDat, ThoiGianKetThuc, MaBan, MaKhachHang) "
+                   + "VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection con = ConnectDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
             ps.setString(1, maPhieu);
             ps.setTimestamp(2, bookingStart);
             ps.setTimestamp(3, bookingEnd);
             ps.setString(4, maBan);
-            ps.setString(5, maKhachHang); // Chú ý: giá trị này phải tồn tại trong bảng KhachHang
-            int n = ps.executeUpdate();
-            success = n > 0;
-        } catch (SQLException | IllegalArgumentException e) {
+            ps.setString(5, maKhachHang);
+
+            int rows = ps.executeUpdate();
+            if (rows > 0) {
+                return maPhieu;   // chèn thành công, trả về mã phiếu
+            } else {
+                return null;      // chèn không thành công
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try { if (ps != null) ps.close(); } catch (SQLException e) { e.printStackTrace(); }
+            return null;
         }
-        return success;
     }
 
+    
     // Lấy danh sách bàn theo tiêu chí: khu vực, số chỗ và bàn không bị đặt trong ngày (theo ngày)
     public List<Ban> getBanTheoTieuChi(String khuVuc, int soCho, Date ngayDat) {
         List<Ban> banList = new ArrayList<>();

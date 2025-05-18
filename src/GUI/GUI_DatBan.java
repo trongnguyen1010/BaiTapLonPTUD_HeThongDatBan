@@ -2,9 +2,11 @@ package GUI;
 
 import com.toedter.calendar.JDateChooser;
 import DAO.Ban_DAO;
+import DAO.ChiTietPhieuDatBan_DAO;
 import DAO.KhachHangDAO;
 import Entity.Ban;
 import Entity.KhachHang;
+import Entity.MonAn;
 import Entity.PhieuDatBan;
 
 import java.awt.BorderLayout;
@@ -22,6 +24,7 @@ import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -211,58 +214,143 @@ public class GUI_DatBan extends JPanel {
 		    
 		    updateGridPanel(filtered);
 		});
-
-
+		
+//		btnDatBan.addActionListener(e -> {
+//		    if (selectedMaBan == null) {
+//		        JOptionPane.showMessageDialog(GUI_DatBan.this, "Bạn chưa chọn bàn nào!");
+//		        return;
+//		    }
+//		    Date ngayDat = dateChooser.getDate();
+//		    String startTime = (String) comboGioBatDau.getSelectedItem();
+//		    String endTime   = (String) comboGioKetThuc.getSelectedItem();
+//
+//		    Ban_DAO banDAO = new Ban_DAO();
+//		    if (banDAO.isTableBooked(selectedMaBan, ngayDat, startTime, endTime)) {
+//		        JOptionPane.showMessageDialog(GUI_DatBan.this, "Bàn đã được đặt trong khoảng thời gian này.");
+//		        return;
+//		    }
+//
+//		    // Mở dialog nhập thông tin khách hàng (và chọn món nếu có)
+//		    DatBanDialog dialog = new DatBanDialog(
+//		        SwingUtilities.getWindowAncestor(GUI_DatBan.this),
+//		        selectedTableInfo, ngayDat, startTime, endTime
+//		    );
+//		    dialog.setVisible(true);
+//		    if (!dialog.isConfirmed()) return;
+//
+//		    // 1) Xử lý Khách hàng
+//		    String sdt = dialog.getSdt();
+//		    KhachHangDAO khDAO = new KhachHangDAO();
+//		    KhachHang kh = khDAO.getKhachHangByPhone(sdt);
+//		    if (kh == null) {
+//		        kh = new KhachHang(
+//		            sdt, 
+//		            dialog.getTenKhach(), 
+//		            dialog.getEmail(), 
+//		            dialog.getGioiTinh(), 
+//		            sdt
+//		        );
+//		        if (!khDAO.insert(kh)) {
+//		            JOptionPane.showMessageDialog(GUI_DatBan.this, "Lỗi khi tạo khách hàng mới!");
+//		            return;
+//		        }
+//		    }
+//
+//		    // 2) Đặt bàn, nhận về mã phiếu
+//		    String maPhieu = banDAO.datBan(
+//		        selectedMaBan, 
+//		        ngayDat, 
+//		        startTime, 
+//		        endTime, 
+//		        kh.getMaKhachHang()
+//		    );
+//		    if (maPhieu == null) {
+//		        JOptionPane.showMessageDialog(GUI_DatBan.this, "Đặt bàn thất bại!");
+//		        return;
+//		    }
+//
+//		    // 3) Chèn chi tiết món (nếu có)
+//		    ChiTietPhieuDatBan_DAO ctDAO = new ChiTietPhieuDatBan_DAO();
+//		    // Giả sử dialog.getSelectedDishes() trả về Map<MonAn,Integer> món + số lượng
+//		    for (Map.Entry<MonAn,Integer> entry : dialog.getSelectedDishes().entrySet()) {
+//		        String maMon  = entry.getKey().getMaMonAn();
+//		        int    qty    = entry.getValue();
+//		        ctDAO.addChiTiet(maPhieu, maMon, qty);
+//		    }
+//
+//		    // 4) Cập nhật giao diện
+//		    JOptionPane.showMessageDialog(GUI_DatBan.this, "Đặt bàn thành công!");
+//		    updateGridPanel(banDAO.getAllBanByDate(ngayDat));
+//		    resetTableSelection();
+//		});
+		
 		btnDatBan.addActionListener(e -> {
 		    if (selectedMaBan == null) {
-		        JOptionPane.showMessageDialog(GUI_DatBan.this, "Bạn chưa chọn bàn nào!");
+		        JOptionPane.showMessageDialog(this, "Bạn chưa chọn bàn nào!");
 		        return;
 		    }
-		    Date ngayDat = dateChooser.getDate();
+		    Date ngayDat      = dateChooser.getDate();
 		    String startTime = (String) comboGioBatDau.getSelectedItem();
-		    String endTime = (String) comboGioKetThuc.getSelectedItem();
-		    
+		    String endTime   = (String) comboGioKetThuc.getSelectedItem();
+
 		    Ban_DAO banDAO = new Ban_DAO();
 		    if (banDAO.isTableBooked(selectedMaBan, ngayDat, startTime, endTime)) {
-		        JOptionPane.showMessageDialog(GUI_DatBan.this, "Bàn đã được đặt trong khoảng thời gian này.");
+		        JOptionPane.showMessageDialog(this, "Bàn đã được đặt trong khoảng thời gian này.");
 		        return;
 		    }
-		    
-		    // Mở dialog nhập thông tin khách hàng
-		    DatBanDialog dialog = new DatBanDialog(SwingUtilities.getWindowAncestor(GUI_DatBan.this),
-		            selectedTableInfo, ngayDat, startTime, endTime);
+
+		    // Mở dialog lấy info khách + món
+		    DatBanDialog dialog = new DatBanDialog(
+		        SwingUtilities.getWindowAncestor(this),
+		        selectedTableInfo, ngayDat, startTime, endTime
+		    );
 		    dialog.setVisible(true);
-		    if (dialog.isConfirmed()) {
-		        String sdt = dialog.getSdt();
-		        // Kiểm tra sự tồn tại của khách hàng
-		        KhachHangDAO khDAO = new KhachHangDAO();
-		        KhachHang kh = khDAO.getKhachHangByPhone(sdt);
-		        if (kh == null) {
-		            // Nếu chưa tồn tại, insert khách hàng mới.
-		            // Giả sử ta dùng sdt làm MaKhachHang nếu chưa có
-		            String tenKhach = dialog.getTenKhach();
-		            String gioiTinh = dialog.getGioiTinh();
-		            String email = dialog.getEmail();
-		            kh = new KhachHang(sdt, tenKhach, email, gioiTinh, sdt);
-		            if (!khDAO.insert(kh)) {
-		                JOptionPane.showMessageDialog(GUI_DatBan.this, "Lỗi khi tạo khách hàng mới!");
-		                return;
-		            }
-		        }
-		        // Sử dụng kh.getMaKhachHang() cho hàm đặt bàn
-		        boolean success = banDAO.datBan(selectedMaBan, ngayDat, startTime, endTime, kh.getMaKhachHang());
-		        if (success) {
-		            JOptionPane.showMessageDialog(GUI_DatBan.this, "Đặt bàn thành công!");
-		            updateGridPanel(banDAO.getAllBanByDate(ngayDat));
-		            resetTableSelection();
-		        } else {
-		            JOptionPane.showMessageDialog(GUI_DatBan.this, "Có lỗi xảy ra, vui lòng thử lại.");
+		    if (!dialog.isConfirmed()) return;
+
+		    // 1) Tạo / lấy Khách hàng
+		    String sdt = dialog.getSdt();
+		    KhachHangDAO khDAO = new KhachHangDAO();
+		    KhachHang kh = khDAO.getKhachHangByPhone(sdt);
+		    if (kh == null) {
+		        kh = new KhachHang(
+		            sdt,
+		            dialog.getTenKhach(),
+		            dialog.getEmail(),
+		            dialog.getGioiTinh(),
+		            sdt
+		        );
+		        if (!khDAO.insert(kh)) {
+		            JOptionPane.showMessageDialog(this, "Lỗi khi tạo khách hàng mới!");
+		            return;
 		        }
 		    }
+
+		    // 2) Đặt bàn, lấy về mã phiếu
+		    String maPhieu = banDAO.datBan(
+		        selectedMaBan, ngayDat, startTime, endTime, kh.getMaKhachHang()
+		    );
+		    if (maPhieu == null) {
+		        JOptionPane.showMessageDialog(this, "Đặt bàn thất bại!");
+		        return;
+		    }
+
+		    // 3) Chèn chi tiết món (nếu có)
+		    ChiTietPhieuDatBan_DAO ctDAO = new ChiTietPhieuDatBan_DAO();
+		    dialog.getSelectedDishes().forEach((mon, qty) -> {
+		        ctDAO.addChiTiet(maPhieu, mon.getMaMonAn(), qty);
+		    });
+
+		    // 4) Cập nhật lại UI
+		    JOptionPane.showMessageDialog(this, "Đặt bàn thành công!");
+		    updateGridPanel(banDAO.getAllBanByDate(ngayDat));
+		    resetTableSelection();
 		});
+
 
 	}
 
+		
+		
 	// Hàm tạo một item trong sidebar với icon và text
 	private JPanel createSidebarItem(String iconPath, String text) {
 		JPanel panel = new JPanel();
