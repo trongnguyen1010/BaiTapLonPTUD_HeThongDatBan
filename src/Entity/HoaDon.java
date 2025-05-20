@@ -3,58 +3,69 @@ package Entity;
 import java.time.LocalDate;
 
 public class HoaDon {
-    private String maHoaDon;
-    private LocalDate ngayLap;
-    private String phuongThuc;
-    private KhachHang maKhachHang;
-    private NhanVien maNhanVien;
+	private String maHoaDon;
+	private LocalDate ngayLap;
+	private String phuongThuc;
+	
 
-    // Constructor, getters, setters
-    public HoaDon(String maHoaDon, LocalDate ngayLap, String phuongThuc, KhachHang maKhachHang, NhanVien maNhanVien) {
-        this.maHoaDon = maHoaDon;
-        this.ngayLap = ngayLap;
-        this.phuongThuc = phuongThuc;
-        this.maKhachHang = maKhachHang;
-        this.maNhanVien = maNhanVien;
-    }
+	private KhachHang maKhachHang;
+	private NhanVien maNhanVien;
+	private Double ThanhTien;
 
-    public String getMaHoaDon() {
-        return maHoaDon;
-    }
+	// Constructor, getters, setters
+	public HoaDon(String maHoaDon, LocalDate ngayLap, String phuongThuc, KhachHang maKhachHang, NhanVien maNhanVien,Double ThanhTien) {
+		this.maHoaDon = maHoaDon;
+		this.ngayLap = ngayLap;
+		this.phuongThuc = phuongThuc;
+		this.maKhachHang = maKhachHang;
+		this.maNhanVien = maNhanVien;
+		this.ThanhTien=ThanhTien;
+	}
+	public Double getThanhTien() {
+		return ThanhTien;
+	}
 
-    public void setMaHoaDon(String maHoaDon) {
-        this.maHoaDon = maHoaDon;
-    }
+	public void setThanhTien(Double thanhTien) {
+		ThanhTien = thanhTien;
+	}
 
-    public LocalDate getNgayLap() {
-        return ngayLap;
-    }
+	public String getMaHoaDon() {
+		return maHoaDon;
+	}
 
-    public void setNgayLap(LocalDate ngayLap) {
-        this.ngayLap = ngayLap;
-    }
+	public void setMaHoaDon(String maHoaDon) {
+		this.maHoaDon = maHoaDon;
+	}
 
-    public String getPhuongThuc() {
-        return phuongThuc;
-    }
+	public LocalDate getNgayLap() {
+		return ngayLap;
+	}
 
-    public void setPhuongThuc(String phuongThuc) {
-        this.phuongThuc = phuongThuc;
-    }
+	public void setNgayLap(LocalDate ngayLap) {
+		this.ngayLap = ngayLap;
+	}
 
-    public KhachHang getMaKhachHang() {
-        return maKhachHang;
-    }
+	public String getPhuongThuc() {
+		return phuongThuc;
+	}
 
-    public void setMaKhachHang(KhachHang maKhachHang) {
-        this.maKhachHang = maKhachHang;
-    }
+	public void setPhuongThuc(String phuongThuc) {
+		this.phuongThuc = phuongThuc;
+	}
 
-    public NhanVien getMaNhanVien() {
-        return maNhanVien;
-    }
+	public KhachHang getMaKhachHang() {
+		return maKhachHang;
+	}
 
-    public void setMaNhanVien(NhanVien maNhanVien) {
-        this.maNhanVien = maNhanVien;
-    }
+	public void setMaKhachHang(KhachHang maKhachHang) {
+		this.maKhachHang = maKhachHang;
+	}
+
+	public NhanVien getMaNhanVien() {
+		return maNhanVien;
+	}
+
+	public void setMaNhanVien(NhanVien maNhanVien) {
+		this.maNhanVien = maNhanVien;
+	}
 }

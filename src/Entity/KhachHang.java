@@ -1,66 +1,67 @@
 package Entity;
 
 public class KhachHang {
-    private String maKhachHang;
-    private String tenKhachHang;
-    private String email;
-    private String gioiTinh;
-    private String sdt;
+	private String maKhachHang;
+	private String tenKhachHang;
+	private String email;
+	private String gioiTinh;
+	private String sdt;
 
-    // Constructors
-    public KhachHang() {}
-    
-    public KhachHang(String maKhachHang) {
-        this.maKhachHang = maKhachHang;
-    }
+	// Constructors
+	public KhachHang() {
+	}
 
-    public KhachHang(String maKhachHang, String tenKhachHang, String email, String gioiTinh, String sdt) {
-        this.maKhachHang = maKhachHang;
-        this.tenKhachHang = tenKhachHang;
-        this.email = email;
-        this.gioiTinh = gioiTinh;
-        this.sdt = sdt;
-    }
+	public KhachHang(String maKhachHang) {
+		this.maKhachHang = maKhachHang;
+	}
 
-    // Getters and Setters
+	public KhachHang(String maKhachHang, String tenKhachHang, String email, String gioiTinh, String sdt) {
+		this.maKhachHang = maKhachHang;
+		this.tenKhachHang = tenKhachHang;
+		this.email = email;
+		this.gioiTinh = gioiTinh;
+		this.sdt = sdt;
+	}
 
-    public String getMaKhachHang() {
-        return maKhachHang;
-    }
+	// Getters and Setters
 
-    public void setMaKhachHang(String maKhachHang) {
-        this.maKhachHang = maKhachHang;
-    }
+	public String getMaKhachHang() {
+		return maKhachHang;
+	}
 
-    public String getTenKhachHang() {
-        return tenKhachHang;
-    }
+	public void setMaKhachHang(String maKhachHang) {
+		this.maKhachHang = maKhachHang;
+	}
 
-    public void setTenKhachHang(String tenKhachHang) {
-        this.tenKhachHang = tenKhachHang;
-    }
+	public String getTenKhachHang() {
+		return tenKhachHang;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setTenKhachHang(String tenKhachHang) {
+		this.tenKhachHang = tenKhachHang;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    
-    public String getSdt() {
-        return sdt;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setSdt(String sdt) {
-        this.sdt = sdt;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public String getGioiTinh() {
-        return gioiTinh;
-    }
+	public String getSdt() {
+		return sdt;
+	}
 
-    public void setGioiTinh(String gioiTinh) {
-        this.gioiTinh = gioiTinh;
-    }
+	public void setSdt(String sdt) {
+		this.sdt = sdt;
+	}
+
+	public String getGioiTinh() {
+		return gioiTinh;
+	}
+
+	public void setGioiTinh(String gioiTinh) {
+		this.gioiTinh = gioiTinh;
+	}
 }

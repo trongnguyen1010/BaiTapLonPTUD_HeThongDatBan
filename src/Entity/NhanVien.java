@@ -1,75 +1,76 @@
 package Entity;
 
 public class NhanVien {
-    private String maNhanVien;
-    private String ten;
-    private String email;
-    private String chucVu;
-    private String gioiTinh;
-    private String sdt;
+	private String maNhanVien;
+	private String ten;
+	private String email;
+	private String chucVu;
+	private String gioiTinh;
+	private String sdt;
 
-    // Constructors
-    public NhanVien() {}
-    
-    public NhanVien(String maNhanVien) {
-        this.maNhanVien = maNhanVien;
-    }
+	// Constructors
+	public NhanVien() {
+	}
 
-    public NhanVien(String maNhanVien, String ten, String email, String chucVu, String gioiTinh, String sdt) {
-        this.maNhanVien = maNhanVien;
-        this.ten = ten;
-        this.email = email;
-        this.chucVu = chucVu;
-        this.gioiTinh = gioiTinh;
-        this.sdt = sdt;
-    }
+	public NhanVien(String maNhanVien) {
+		this.maNhanVien = maNhanVien;
+	}
 
-    // Getters and Setters
-    public String getMaNhanVien() {
-        return maNhanVien;
-    }
+	public NhanVien(String maNhanVien, String ten, String email, String chucVu, String gioiTinh, String sdt) {
+		this.maNhanVien = maNhanVien;
+		this.ten = ten;
+		this.email = email;
+		this.chucVu = chucVu;
+		this.gioiTinh = gioiTinh;
+		this.sdt = sdt;
+	}
 
-    public void setMaNhanVien(String maNhanVien) {
-        this.maNhanVien = maNhanVien;
-    }
+	// Getters and Setters
+	public String getMaNhanVien() {
+		return maNhanVien;
+	}
 
-    public String getTen() {
-        return ten;
-    }
+	public void setMaNhanVien(String maNhanVien) {
+		this.maNhanVien = maNhanVien;
+	}
 
-    public void setTen(String ten) {
-        this.ten = ten;
-    }
+	public String getTen() {
+		return ten;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setTen(String ten) {
+		this.ten = ten;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getChucVu() {
-        return chucVu;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setChucVu(String chucVu) {
-        this.chucVu = chucVu;
-    }
+	public String getChucVu() {
+		return chucVu;
+	}
 
-    public String getGioiTinh() {
-        return gioiTinh;
-    }
+	public void setChucVu(String chucVu) {
+		this.chucVu = chucVu;
+	}
 
-    public void setGioiTinh(String gioiTinh) {
-        this.gioiTinh = gioiTinh;
-    }
+	public String getGioiTinh() {
+		return gioiTinh;
+	}
 
-    public String getSdt() {
-        return sdt;
-    }
+	public void setGioiTinh(String gioiTinh) {
+		this.gioiTinh = gioiTinh;
+	}
 
-    public void setSdt(String sdt) {
-        this.sdt = sdt;
-    }
+	public String getSdt() {
+		return sdt;
+	}
+
+	public void setSdt(String sdt) {
+		this.sdt = sdt;
+	}
 }

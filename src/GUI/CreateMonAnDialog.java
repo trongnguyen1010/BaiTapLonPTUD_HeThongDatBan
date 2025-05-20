@@ -14,180 +14,220 @@ import utils.RandomGenerator;
 
 public class CreateMonAnDialog extends javax.swing.JDialog {
 
-    private GUI_QuanLyMonAn MA_GUI;
-    private MonAn_DAO MA_DAO = new MonAn_DAO();
-    private byte[] imageBytes; // Lưu ảnh đã chọn
+	private GUI_QuanLyMonAn MA_GUI;
+	private MonAn_DAO MA_DAO = new MonAn_DAO();
+	private byte[] imageBytes; // Lưu ảnh đã chọn
 
-    public CreateMonAnDialog(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        initComponents();
-    }
+	public CreateMonAnDialog(java.awt.Frame parent, boolean modal) {
+		super(parent, modal);
+		initComponents();
+	}
 
-    public CreateMonAnDialog(java.awt.Frame parent, GUI_QuanLyMonAn MA_GUI) {
-        super(parent, true);
-        this.MA_GUI = MA_GUI;
-        initComponents();
-    }
+	public CreateMonAnDialog(java.awt.Frame parent, GUI_QuanLyMonAn MA_GUI) {
+		super(parent, true);
+		this.MA_GUI = MA_GUI;
+		initComponents();
+	}
 
-    private MonAn getInputFields() {
-        String id = txtmaMonAn.getText().trim(); 
-        String tenMonAn = txtTenMonAn.getText().trim();
+	private MonAn getInputFields() {
+		String id = txtmaMonAn.getText().trim();
+		String tenMonAn = txtTenMonAn.getText().trim();
 
-        if (tenMonAn.isEmpty() || txtDonGia.getText().trim().isEmpty() || txtSoLuong.getText().trim().isEmpty() || imageBytes == null) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin và chọn ảnh.");
-            return null;
-        }
+		if (tenMonAn.isEmpty() || txtDonGia.getText().trim().isEmpty() || txtSoLuong.getText().trim().isEmpty()
+				|| cboxLoaiMon.getSelectedIndex() == -1 || imageBytes == null) {
 
-        try {
-            double donGia = Double.parseDouble(txtDonGia.getText().trim());
-            int soLuong = Integer.parseInt(txtSoLuong.getText().trim());
+			JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin và chọn ảnh.");
+			return null;
+		}
 
-            return new MonAn(id, tenMonAn, donGia, soLuong, imageBytes);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Đơn giá và số lượng phải là số.");
-            return null;
-        }
-    }
+		try {
+			double donGia = Double.parseDouble(txtDonGia.getText().trim());
+			int soLuong = Integer.parseInt(txtSoLuong.getText().trim());
+			int maloai = cboxLoaiMon.getSelectedIndex()+1; // hoặc ánh xạ nếu cần đúng mã loại từ DB
 
-    private void initComponents() {
-        jPanelTitle = new JPanel();
-        lblDialog = new JLabel();
-        jPanelContent = new JPanel();
-        jPanelTen = new JPanel();
-        txtmaMonAn = new JTextField();
-        lblTenMonAn = new JLabel();
-        txtTenMonAn = new JTextField();
-        jPanelDonGia = new JPanel();
-        lblDonGia = new JLabel();
-        txtDonGia = new JTextField();
-        jPanelSoLuong = new JPanel();
-        lblSoLuong = new JLabel();
-        txtSoLuong = new JTextField();
-        jPanelduongDanAnh = new JPanel();
-        lblduongDanAnh = new JLabel();
-        btnChonAnh = new JButton();
-        lblAnhPreview = new JLabel();
-        jPanelButtons = new JPanel();
-        btnHuy = new JButton();
-        btnAdd = new JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(500, 450));
+			return new MonAn(id, tenMonAn, donGia, soLuong, maloai, imageBytes);
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(this, "Đơn giá, số lượng và mã loại phải là số.");
+			return null;
+		}
+	}
 
-        // Title
-        jPanelTitle.setBackground(new Color(161, 227, 249));
-        jPanelTitle.setPreferredSize(new java.awt.Dimension(500, 50));
-        jPanelTitle.setLayout(new BorderLayout());
-        lblDialog.setFont(new Font("Roboto Medium", 0, 18));
-        lblDialog.setHorizontalAlignment(SwingConstants.CENTER);
-        lblDialog.setText("THÊM MÓN ĂN");
-        lblDialog.setForeground(Color.WHITE);
-        jPanelTitle.add(lblDialog, BorderLayout.CENTER);
-        getContentPane().add(jPanelTitle, BorderLayout.NORTH);
 
-        // Content
-        jPanelContent.setBackground(Color.WHITE);
-        jPanelContent.setLayout(new FlowLayout(FlowLayout.CENTER, 6, 16));
+	private void initComponents() {
+		jPanelTitle = new JPanel();
+		lblDialog = new JLabel();
+		jPanelContent = new JPanel();
+		jPanelTen = new JPanel();
+		txtmaMonAn = new JTextField();
+		lblTenMonAn = new JLabel();
+		txtTenMonAn = new JTextField();
+		jPanelDonGia = new JPanel();
+		lblDonGia = new JLabel();
+		txtDonGia = new JTextField();
+		jPanelSoLuong = new JPanel();
+		lblSoLuong = new JLabel();
+		txtSoLuong = new JTextField();
+		jPanelduongDanAnh = new JPanel();
+		lblduongDanAnh = new JLabel();
+		btnChonAnh = new JButton();
+		lblAnhPreview = new JLabel();
+		jPanelButtons = new JPanel();
+		
+		btnHuy = new JButton();
+		btnAdd = new JButton();
 
-        jPanelTen.setPreferredSize(new Dimension(450, 40));
-        jPanelTen.setLayout(new FlowLayout(FlowLayout.LEFT, 6, 0));
-        lblTenMonAn.setText("Tên món ăn:");
-        lblTenMonAn.setPreferredSize(new Dimension(150, 40));
-        txtTenMonAn.setPreferredSize(new Dimension(280, 40));
-        jPanelTen.add(lblTenMonAn);
-        jPanelTen.add(txtTenMonAn);
-        jPanelContent.add(jPanelTen);
+		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+		setPreferredSize(new java.awt.Dimension(500, 450));
 
-        jPanelDonGia.setPreferredSize(new Dimension(450, 40));
-        jPanelDonGia.setLayout(new FlowLayout(FlowLayout.LEFT, 6, 0));
-        lblDonGia.setText("Đơn giá:");
-        lblDonGia.setPreferredSize(new Dimension(150, 40));
-        txtDonGia.setPreferredSize(new Dimension(280, 40));
-        jPanelDonGia.add(lblDonGia);
-        jPanelDonGia.add(txtDonGia);
-        jPanelContent.add(jPanelDonGia);
+		// Title
+		jPanelTitle.setBackground(new Color(161, 227, 249));
+		jPanelTitle.setPreferredSize(new java.awt.Dimension(500, 50));
+		jPanelTitle.setLayout(new BorderLayout());
+		lblDialog.setFont(new Font("Roboto Medium", 0, 18));
+		lblDialog.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDialog.setText("THÊM MÓN ĂN");
+		lblDialog.setForeground(Color.WHITE);
+		jPanelTitle.add(lblDialog, BorderLayout.CENTER);
+		getContentPane().add(jPanelTitle, BorderLayout.NORTH);
 
-        jPanelSoLuong.setPreferredSize(new Dimension(450, 40));
-        jPanelSoLuong.setLayout(new FlowLayout(FlowLayout.LEFT, 6, 0));
-        lblSoLuong.setText("Số lượng:");
-        lblSoLuong.setPreferredSize(new Dimension(150, 40));
-        txtSoLuong.setPreferredSize(new Dimension(280, 40));
-        jPanelSoLuong.add(lblSoLuong);
-        jPanelSoLuong.add(txtSoLuong);
-        jPanelContent.add(jPanelSoLuong);
+		// Content
+		jPanelContent.setBackground(Color.WHITE);
+		jPanelContent.setLayout(new FlowLayout(FlowLayout.CENTER, 6, 16));
 
-        // Panel chọn ảnh
-        jPanelduongDanAnh.setPreferredSize(new Dimension(450, 100));
-        jPanelduongDanAnh.setLayout(new FlowLayout(FlowLayout.LEFT, 6, 0));
+		jPanelTen.setPreferredSize(new Dimension(450, 40));
+		jPanelTen.setLayout(new FlowLayout(FlowLayout.LEFT, 6, 0));
+		lblTenMonAn.setText("Tên món ăn:");
+		lblTenMonAn.setPreferredSize(new Dimension(150, 40));
+		txtTenMonAn.setPreferredSize(new Dimension(280, 40));
+		jPanelTen.add(lblTenMonAn);
+		jPanelTen.add(txtTenMonAn);
+		jPanelContent.add(jPanelTen);
 
-        lblduongDanAnh.setText("Chọn ảnh:");
-        lblduongDanAnh.setPreferredSize(new Dimension(150, 40));
+		jPanelDonGia.setPreferredSize(new Dimension(450, 40));
+		jPanelDonGia.setLayout(new FlowLayout(FlowLayout.LEFT, 6, 0));
+		lblDonGia.setText("Đơn giá:");
+		lblDonGia.setPreferredSize(new Dimension(150, 40));
+		txtDonGia.setPreferredSize(new Dimension(280, 40));
+		jPanelDonGia.add(lblDonGia);
+		jPanelDonGia.add(txtDonGia);
+		jPanelContent.add(jPanelDonGia);
 
-        btnChonAnh.setText("Chọn ảnh");
-        btnChonAnh.setPreferredSize(new Dimension(120, 40));
-        btnChonAnh.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            int result = fileChooser.showOpenDialog(CreateMonAnDialog.this);
-            if (result == JFileChooser.APPROVE_OPTION) {
-                try {
-                    java.io.File file = fileChooser.getSelectedFile();
-                    imageBytes = Files.readAllBytes(file.toPath());
+		jPanelSoLuong.setPreferredSize(new Dimension(450, 40));
+		jPanelSoLuong.setLayout(new FlowLayout(FlowLayout.LEFT, 6, 0));
+		lblSoLuong.setText("Số lượng:");
+		lblSoLuong.setPreferredSize(new Dimension(150, 40));
+		txtSoLuong.setPreferredSize(new Dimension(280, 40));
+		jPanelSoLuong.add(lblSoLuong);
+		jPanelSoLuong.add(txtSoLuong);
+		jPanelContent.add(jPanelSoLuong);
+		JPanel jPanelMaLoai = new JPanel();
+		jPanelMaLoai.setPreferredSize(new Dimension(450, 40));
+		jPanelMaLoai.setLayout(new FlowLayout(FlowLayout.LEFT, 6, 0));
 
-                    // Hiển thị ảnh preview
-                    ImageIcon icon = new ImageIcon(imageBytes);
-                    Image img = icon.getImage().getScaledInstance(100, 60, Image.SCALE_SMOOTH);
-                    lblAnhPreview.setIcon(new ImageIcon(img));
-                    lblAnhPreview.setText("");
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(CreateMonAnDialog.this, "Lỗi khi đọc ảnh.");
-                }
-            }
-        });
+//		JLabel lblMaLoai = new JLabel("Mã loại:");
+//		lblMaLoai.setPreferredSize(new Dimension(150, 40));
+//
+//		txtMaLoai = new JTextField();
+//		txtMaLoai.setPreferredSize(new Dimension(280, 40));
+//
+//		jPanelMaLoai.add(lblMaLoai);
+//		jPanelMaLoai.add(txtMaLoai);
+//		jPanelContent.add(jPanelMaLoai);
+		JLabel lblLoaiMon = new JLabel("Loại món:");
+		lblLoaiMon.setPreferredSize(new Dimension(150, 40));
 
-        lblAnhPreview.setText("Chưa chọn ảnh");
-        lblAnhPreview.setPreferredSize(new Dimension(100, 60));
+		cboxLoaiMon = new JComboBox<>();
+		cboxLoaiMon.setModel(new DefaultComboBoxModel<>(new String[] {
+		    "Món Mới", "Khai Vị", "Lẩu", "Heo-Gà-Bò", "Hải Sản", "Đồ uống", "Món Tráng Miệng"
+		}));
+		cboxLoaiMon.setPreferredSize(new Dimension(280, 40));
 
-        jPanelduongDanAnh.add(lblduongDanAnh);
-        jPanelduongDanAnh.add(btnChonAnh);
-        jPanelduongDanAnh.add(lblAnhPreview);
-        jPanelContent.add(jPanelduongDanAnh);
+		JPanel jPanelLoaiMon = new JPanel(); // Nếu bạn chưa tạo
+		jPanelLoaiMon.add(lblLoaiMon);
+		jPanelLoaiMon.add(cboxLoaiMon);
 
-        getContentPane().add(jPanelContent, BorderLayout.CENTER);
+		jPanelContent.add(jPanelLoaiMon);
 
-        // Buttons
-        jPanelButtons.setLayout(new FlowLayout(FlowLayout.CENTER, 8, 10));
-        btnHuy.setText("HỦY BỎ");
-        btnHuy.setPreferredSize(new Dimension(200, 40));
-        btnHuy.addActionListener(evt -> dispose());
-        jPanelButtons.add(btnHuy);
 
-        btnAdd.setText("THÊM");
-        btnAdd.setPreferredSize(new Dimension(200, 40));
-        btnAdd.setBackground(Color.WHITE);
-        btnAdd.setForeground(Color.BLACK);
-        btnAdd.addActionListener((ActionEvent evt) -> {
-            MonAn ma = getInputFields();
-            if (ma != null) {
-                MA_DAO.insert(ma);
-                if (MA_GUI != null) MA_GUI.loadData();
-                dispose();
-            }
-        });
 
-        jPanelButtons.add(btnAdd);
+		// Panel chọn ảnh
+		jPanelduongDanAnh.setPreferredSize(new Dimension(450, 100));
+		jPanelduongDanAnh.setLayout(new FlowLayout(FlowLayout.LEFT, 6, 0));
 
-        getContentPane().add(jPanelButtons, BorderLayout.SOUTH);
-        pack();
-        setLocationRelativeTo(null);
+		lblduongDanAnh.setText("Chọn ảnh:");
+		lblduongDanAnh.setPreferredSize(new Dimension(150, 40));
 
-        // Tự tạo mã món ăn ngẫu nhiên
-        String randomId = RandomGenerator.getRandomId();
-        txtmaMonAn.setText(randomId);
-    }
+		btnChonAnh.setText("Chọn ảnh");
+		btnChonAnh.setPreferredSize(new Dimension(120, 40));
+		btnChonAnh.addActionListener(e -> {
+			JFileChooser fileChooser = new JFileChooser();
+			int result = fileChooser.showOpenDialog(CreateMonAnDialog.this);
+			if (result == JFileChooser.APPROVE_OPTION) {
+				try {
+					java.io.File file = fileChooser.getSelectedFile();
+					imageBytes = Files.readAllBytes(file.toPath());
 
-    // Biến giao diện
-    private JPanel jPanelTitle, jPanelContent, jPanelTen, jPanelDonGia, jPanelSoLuong, jPanelButtons, jPanelduongDanAnh;
-    private JLabel lblDialog, lblTenMonAn, lblDonGia, lblSoLuong, lblduongDanAnh, lblAnhPreview;
-    private JTextField txtTenMonAn, txtDonGia, txtSoLuong, txtmaMonAn;
-    private JButton btnAdd, btnHuy, btnChonAnh;
+					// Hiển thị ảnh preview
+					ImageIcon icon = new ImageIcon(imageBytes);
+					Image img = icon.getImage().getScaledInstance(100, 60, Image.SCALE_SMOOTH);
+					lblAnhPreview.setIcon(new ImageIcon(img));
+					lblAnhPreview.setText("");
+				} catch (IOException ex) {
+					JOptionPane.showMessageDialog(CreateMonAnDialog.this, "Lỗi khi đọc ảnh.");
+				}
+			}
+		});
+
+		lblAnhPreview.setText("Chưa chọn ảnh");
+		lblAnhPreview.setPreferredSize(new Dimension(100, 60));
+
+		jPanelduongDanAnh.add(lblduongDanAnh);
+		jPanelduongDanAnh.add(btnChonAnh);
+		jPanelduongDanAnh.add(lblAnhPreview);
+		jPanelContent.add(jPanelduongDanAnh);
+
+		getContentPane().add(jPanelContent, BorderLayout.CENTER);
+
+		// Buttons
+		jPanelButtons.setLayout(new FlowLayout(FlowLayout.CENTER, 8, 10));
+		btnHuy.setText("HỦY BỎ");
+		btnHuy.setPreferredSize(new Dimension(200, 40));
+		btnHuy.addActionListener(evt -> dispose());
+		jPanelButtons.add(btnHuy);
+
+		btnAdd.setText("THÊM");
+		btnAdd.setPreferredSize(new Dimension(200, 40));
+		btnAdd.setBackground(Color.WHITE);
+		btnAdd.setForeground(Color.BLACK);
+		btnAdd.addActionListener((ActionEvent evt) -> {
+			MonAn ma = getInputFields();
+			if (ma != null) {
+				MA_DAO.insert(ma);
+				if (MA_GUI != null)
+					MA_GUI.loadData();
+				dispose();
+			}
+		});
+
+		jPanelButtons.add(btnAdd);
+
+		getContentPane().add(jPanelButtons, BorderLayout.SOUTH);
+		pack();
+		setLocationRelativeTo(null);
+
+		// Tự tạo mã món ăn ngẫu nhiên
+		String randomId = RandomGenerator.getRandomId();
+		txtmaMonAn.setText(randomId);
+	}
+
+	// Biến giao diện
+	private JPanel jPanelTitle, jPanelContent, jPanelTen, jPanelDonGia, jPanelSoLuong, jPanelButtons, jPanelduongDanAnh;
+	private JLabel lblDialog, lblTenMonAn, lblDonGia, lblSoLuong, lblduongDanAnh, lblAnhPreview;
+	private JTextField txtTenMonAn, txtDonGia, txtSoLuong, txtmaMonAn;
+	private JButton btnAdd, btnHuy, btnChonAnh;
+	private JComboBox<String> cboxLoaiMon;
+
+//	private JTextField txtMaLoai; // <-- thêm dòng này
+
 }
