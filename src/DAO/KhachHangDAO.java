@@ -106,6 +106,7 @@ public class KhachHangDAO {
      * Ở đây, nếu khách hàng mới, ta sử dụng sdt làm MaKhachHang.
      * Các trường Email có thể để rỗng nếu không cung cấp.
      */
+    //
     public static boolean insert(KhachHang kh) {
         Connection con = ConnectDB.getConnection();
         PreparedStatement stmt = null;

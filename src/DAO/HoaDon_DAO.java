@@ -143,6 +143,7 @@ public class HoaDon_DAO {
         }
         return n > 0;
     }
+	//
 	public List<HoaDon> getAllHoaDon() {
 	    Connection con = ConnectDB.getConnection();
 	    PreparedStatement stmt = null;

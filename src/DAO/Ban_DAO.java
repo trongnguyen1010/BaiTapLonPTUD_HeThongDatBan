@@ -132,7 +132,7 @@ public class Ban_DAO {
         return banList;
     }
 
-    // Lấy tất cả các bàn
+    // Lấy tất cả các bàn có chỉnh static
     public static List<Ban> getAllBan() {
         List<Ban> banList = new ArrayList<>();
         String sql = "SELECT MaBan, TrangThai, MaKhuVuc, SoChoNgoi FROM Ban";

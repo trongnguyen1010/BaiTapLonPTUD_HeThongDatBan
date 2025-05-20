@@ -53,7 +53,7 @@ public class GUI_ListHD extends JPanel {
         controlPanel.add(btnTimKiem);
         controlPanel.add(btnXoa);
         controlPanel.add(btnLamMoi);
-
+//
         // Wrapper cho NORTH
         JPanel northWrapper = new JPanel(new BorderLayout());
         northWrapper.add(headerPanel, BorderLayout.NORTH);
