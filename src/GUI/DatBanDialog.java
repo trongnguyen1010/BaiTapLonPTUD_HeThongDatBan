@@ -48,6 +48,8 @@ public class DatBanDialog extends JDialog {
         this.startTime   = startTime;
         this.endTime     = endTime;
         initComponents();
+        // Kích thước khi chưa đặt món
+        setPreferredSize(new Dimension(500, 350));
         pack();                     // gói lại sau khi dựng xong
         setResizable(true);
         setLocationRelativeTo(owner);
@@ -108,12 +110,13 @@ public class DatBanDialog extends JDialog {
         // 3.3) Dish panel (ẩn ban đầu)
         dishPanel = new JPanel(new BorderLayout(5,5));
         dishPanel.setBackground(Color.WHITE);
+        dishPanel.setSize(500, 400);
         dishPanel.setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createLineBorder(Color.GRAY),
             "Chọn món ăn",
             TitledBorder.LEADING, TitledBorder.TOP,
-            getFont().deriveFont(Font.BOLD,14f), Color.DARK_GRAY
-        ));
+            getFont().deriveFont(Font.BOLD,14f), Color.DARK_GRAY));
+        
         dishPanel.setVisible(false);
 
         // WrapLayout cho các card món
@@ -131,10 +134,11 @@ public class DatBanDialog extends JDialog {
         selectedPanel = new JPanel();
         selectedPanel.setLayout(new BoxLayout(selectedPanel, BoxLayout.Y_AXIS));
         selectedPanel.setBorder(BorderFactory.createTitledBorder("Món đã chọn"));
-        dishPanel.add(new JScrollPane(selectedPanel,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),
-            BorderLayout.SOUTH);
+        JScrollPane selScroll = new JScrollPane(selectedPanel,
+        	    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+        	    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        	selScroll.setPreferredSize(new Dimension(400, 100));
+        dishPanel.add(selScroll, BorderLayout.SOUTH);
 
         center.add(dishPanel, BorderLayout.CENTER);
 
@@ -176,7 +180,20 @@ public class DatBanDialog extends JDialog {
         chkDatMon.addActionListener(e -> {
             boolean show = chkDatMon.isSelected();
             dishPanel.setVisible(show);
+            
+            if (show) {
+                // Kích thước để hiển thị cả menu và selected list
+                setPreferredSize(new Dimension(700, 700));
+            } else {
+                // Trả về kích thước chỉ chứa phần khách hàng
+                setPreferredSize(new Dimension(500, 350));
+            }
+
+            // Đặt lại vị trí chia tỉ lệ split pane
+//            split.setDividerLocation(show ? 0.4 : 1.0);       
             pack();  // tính toán lại kích thước tự động
+            // Gọi lại để dialog vẫn nằm chính giữa owner
+            setLocationRelativeTo(getOwner());
         });
 
         // 4.3) OK / Cancel
@@ -204,19 +221,63 @@ public class DatBanDialog extends JDialog {
     }
 
     // tạo card cho mỗi món ăn
+//    private JPanel createDishCard(MonAn m) {
+//        JPanel c = new JPanel();
+//        c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
+//        c.setBackground(Color.WHITE);
+//        c.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+//        c.setPreferredSize(new Dimension(140,180));
+//
+//        // ảnh
+//        JLabel img = new JLabel();
+//        img.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        if (m.gethinhAnh() != null) {
+//            ImageIcon ic = new ImageIcon(m.gethinhAnh());
+//            Image im = ic.getImage().getScaledInstance(120,60,Image.SCALE_SMOOTH);
+//            img.setIcon(new ImageIcon(im));
+//        }
+//        c.add(img);
+//
+//        // tên & giá
+//        JLabel lbName = new JLabel(m.getTenMonAn(), SwingConstants.CENTER);
+//        lbName.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        c.add(lbName);
+//        JLabel lbPrice = new JLabel(String.format("%.0f VND", m.getDonGia()), SwingConstants.CENTER);
+//        lbPrice.setForeground(Color.RED);
+//        lbPrice.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        c.add(lbPrice);
+//
+//        // spinner SL
+//        JPanel p2 = new JPanel(new FlowLayout(FlowLayout.CENTER,5,0));
+//        p2.setBackground(Color.WHITE);
+//        p2.add(new JLabel("SL:"));
+//        JSpinner sp = new JSpinner(new SpinnerNumberModel(0,0,100,1));
+//        p2.add(sp);
+//        c.add(p2);
+//
+//        sp.addChangeListener(ev -> {
+//            int qty = (Integer)sp.getValue();
+//            if (qty>0) selectedMap.put(m, qty);
+//            else          selectedMap.remove(m);
+//            refreshSelectedPanel();
+//        });
+//
+//        return c;
+//    }
+    
     private JPanel createDishCard(MonAn m) {
         JPanel c = new JPanel();
         c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
         c.setBackground(Color.WHITE);
         c.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        c.setPreferredSize(new Dimension(140,180));
+        c.setPreferredSize(new Dimension(140, 180));
 
         // ảnh
         JLabel img = new JLabel();
         img.setAlignmentX(Component.CENTER_ALIGNMENT);
         if (m.gethinhAnh() != null) {
             ImageIcon ic = new ImageIcon(m.gethinhAnh());
-            Image im = ic.getImage().getScaledInstance(120,60,Image.SCALE_SMOOTH);
+            Image im = ic.getImage().getScaledInstance(120, 60, Image.SCALE_SMOOTH);
             img.setIcon(new ImageIcon(im));
         }
         c.add(img);
@@ -225,28 +286,50 @@ public class DatBanDialog extends JDialog {
         JLabel lbName = new JLabel(m.getTenMonAn(), SwingConstants.CENTER);
         lbName.setAlignmentX(Component.CENTER_ALIGNMENT);
         c.add(lbName);
+        
         JLabel lbPrice = new JLabel(String.format("%.0f VND", m.getDonGia()), SwingConstants.CENTER);
         lbPrice.setForeground(Color.RED);
         lbPrice.setAlignmentX(Component.CENTER_ALIGNMENT);
         c.add(lbPrice);
 
-        // spinner SL
-        JPanel p2 = new JPanel(new FlowLayout(FlowLayout.CENTER,5,0));
+        // Thay spinner SL bằng nút +, -
+        JPanel p2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
         p2.setBackground(Color.WHITE);
-        p2.add(new JLabel("SL:"));
-        JSpinner sp = new JSpinner(new SpinnerNumberModel(0,0,100,1));
-        p2.add(sp);
-        c.add(p2);
+        
+        JButton btnDecrease = new JButton("-");
+        JButton btnIncrease = new JButton("+");
+        JLabel lblQuantity = new JLabel("0");
 
-        sp.addChangeListener(ev -> {
-            int qty = (Integer)sp.getValue();
-            if (qty>0) selectedMap.put(m, qty);
-            else          selectedMap.remove(m);
-            refreshSelectedPanel();
+        btnDecrease.addActionListener(e -> {
+            int qty = Math.max(0, Integer.parseInt(lblQuantity.getText()) - 1);
+            lblQuantity.setText(String.valueOf(qty));
+            updateSelectedMap(m, qty);
+        });
+        
+        btnIncrease.addActionListener(e -> {
+            int qty = Integer.parseInt(lblQuantity.getText()) + 1;
+            lblQuantity.setText(String.valueOf(qty));
+            updateSelectedMap(m, qty);
         });
 
+        p2.add(btnDecrease);
+        p2.add(lblQuantity);
+        p2.add(btnIncrease);
+        c.add(p2);
+        
         return c;
     }
+
+    
+    private void updateSelectedMap(MonAn m, int qty) {
+        if (qty > 0) {
+            selectedMap.put(m, qty);
+        } else {
+            selectedMap.remove(m);
+        }
+        refreshSelectedPanel();
+    }
+//    ---------------------------------------------------------------
 
     // cập nhật lại panel danh sách đã chọn
     private void refreshSelectedPanel() {
