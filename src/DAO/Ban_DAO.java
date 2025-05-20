@@ -22,7 +22,7 @@ public class Ban_DAO {
             e.printStackTrace();
         }
     }
-
+//
     // Kiểm tra xem bàn có bị đặt trong khoảng thời gian không
     public boolean isTableBooked(String maBan, Date ngayDat, String startTime, String endTime) {
         boolean booked = false;
