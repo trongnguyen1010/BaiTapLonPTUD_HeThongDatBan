@@ -199,19 +199,6 @@ public class HoaDon_DAO {
 	    }
 	    return danhSachHoaDon;
 	}
-	public static String getMaxMaHD() {
-	    String maxMaHD = null;
-	    String sql = "SELECT MAX(MaHoaDon) AS MaxMaHD FROM HoaDon";
-	    try (Connection con = ConnectDB.getConnection();
-	         PreparedStatement ps = con.prepareStatement(sql);
-	         ResultSet rs = ps.executeQuery()) {
-	        if (rs.next()) {
-	            maxMaHD = rs.getString("MaxMaHD");
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    return maxMaHD;
-	}
+	
 
 }

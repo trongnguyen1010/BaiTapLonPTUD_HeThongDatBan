@@ -43,6 +43,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import com.itextpdf.text.Document;
@@ -552,16 +553,11 @@ public class GUI_HoaDon_new extends JPanel {
 			                    JOptionPane.INFORMATION_MESSAGE);
 
 			            // 8. Tự động sinh mã hóa đơn mới cho lần tạo tiếp theo
-			            String maxMaHD = HoaDon_DAO.getMaxMaHD(); // hàm lấy mã hóa đơn lớn nhất hiện tại trong DB
-			            String newMaHD;
-			            if (maxMaHD == null || maxMaHD.isEmpty()) {
-			                newMaHD = "HD0001";
-			            } else {
-			                // Lấy phần số từ mã cũ, ví dụ HD0007 -> 7 rồi cộng thêm 1
-			                int num = Integer.parseInt(maxMaHD.replaceAll("\\D", ""));
-			                num++;
-			                newMaHD = "HD" + String.format("%04d", num);
-			            }
+			         // Sinh mã hóa đơn theo thời gian hiện tại (yyyyMMddHHmmss)
+			            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddHHmmss");
+			            String newMaHD = "HD" + LocalDateTime.now().format(formatter);
+			            txtMaHD.setText(newMaHD);
+
 			            txtMaHD.setText(newMaHD);
 
 			            // 9. Reset các trường dữ liệu nếu muốn (ví dụ xóa tên khách, số điện thoại, ds món ăn)

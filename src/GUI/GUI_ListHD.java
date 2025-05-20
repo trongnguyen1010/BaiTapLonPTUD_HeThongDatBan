@@ -76,7 +76,7 @@ public class GUI_ListHD extends JPanel {
         // Event
         btnLamMoi.addActionListener(e -> loadData());
         btnTimKiem.addActionListener(e -> timKiem());
-        //btnXoa.addActionListener(e -> xoaHoaDon());
+        btnXoa.addActionListener(e -> xoaHoaDon());
     }
 
     private void loadData() {
@@ -138,32 +138,31 @@ public class GUI_ListHD extends JPanel {
         }
     }
 
-//    private void xoaHoaDon() {
-//        int selectedRow = table.getSelectedRow();
-//        if (selectedRow == -1) {
-//            JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn để xóa.");
-//            return;
-//        }
-//
-//        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa hóa đơn này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-//        if (confirm == JOptionPane.YES_OPTION) {
-//            try {
-//                String maHoaDon = tableModel.getValueAt(selectedRow, 0).toString();
-//                // Xóa khỏi DB trước
-//               // boolean deleted = hoaDonDao.deleteHoaDon(maHoaDon);
-//                if (deleted) {
-//                    // Xóa khỏi bảng
-//                    tableModel.removeRow(selectedRow);
-//                    JOptionPane.showMessageDialog(this, "Xóa thành công.");
-//                } else {
-//                    JOptionPane.showMessageDialog(this, "Xóa không thành công.");
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                JOptionPane.showMessageDialog(this, "Lỗi khi xóa hóa đơn: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-//            }
-//        }
-//    }
+   private void xoaHoaDon() {
+       int selectedRow = table.getSelectedRow();
+       if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn để xóa.");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa hóa đơn này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+           try {
+                String maHoaDon = tableModel.getValueAt(selectedRow, 0).toString();
+               // Xóa
+                boolean deleted = hoaDonDao.delete(maHoaDon);
+               if (deleted) {
+                   // Xóa khỏi bảng
+                  tableModel.removeRow(selectedRow);
+                   JOptionPane.showMessageDialog(this, "Xóa thành công.");
+             } else {
+                   JOptionPane.showMessageDialog(this, "Xóa không thành công.");
+               }
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Lỗi khi xóa hóa đơn: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }    }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Danh sách hóa đơn");
