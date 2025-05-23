@@ -96,8 +96,15 @@ public class GUI_HoaDon_new extends JPanel {
 		panelNorth2.setBackground(Color.ORANGE);
 		panelNorth2.setPreferredSize(new Dimension(0, 50));
 		panelNorth2.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
-		panelNorth2.add(new JLabel("Header 2 - Cam"));
+
+		// Tạo JLabel tiêu đề "TẠO HÓA ĐƠN"
+		JLabel lblTieuDe = new JLabel("TẠO HÓA ĐƠN");
+		lblTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 24));
+		lblTieuDe.setForeground(Color.BLACK); // Đổi màu chữ nếu muốn
+
+		panelNorth2.add(lblTieuDe);
 		topContainer.add(panelNorth2);
+
 
 		// ===== CENTER Panel =====
 		JPanel panelCenter = new JPanel(new BorderLayout());
