@@ -2,6 +2,7 @@
 package DAO;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -200,5 +201,95 @@ public class HoaDon_DAO {
 	    return danhSachHoaDon;
 	}
 	
+	 public long getTongDoanhThu() {
+	        long total = 0;
+	        Connection con = ConnectDB.getConnection();
+	        PreparedStatement stmt = null;
+	        ResultSet rs = null;
+
+	        try {
+	            String sql = "SELECT SUM(Thanhtien) FROM HoaDon";
+	            stmt = con.prepareStatement(sql);
+	            rs = stmt.executeQuery();
+	            if (rs.next()) {
+	                total = rs.getLong(1);
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        } finally {
+	            // Đóng tài nguyên
+	            try {
+	                if (rs != null) rs.close();
+	                if (stmt != null) stmt.close();
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }
+
+	        return total;
+	    }
+
+	    public int getSoLuongHoaDon() {
+	        int count = 0;
+	        Connection con = ConnectDB.getConnection();
+	        PreparedStatement stmt = null;
+	        ResultSet rs = null;
+
+	        try {
+	            String sql = "SELECT COUNT(*) FROM HoaDon";
+	            stmt = con.prepareStatement(sql);
+	            rs = stmt.executeQuery();
+	            if (rs.next()) {
+	                count = rs.getInt(1);
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        } finally {
+	            // Đóng tài nguyên
+	            try {
+	                if (rs != null) rs.close();
+	                if (stmt != null) stmt.close();
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }
+
+	        return count;
+	    }
+
+	    public long getDoanhThuTheoNgay(LocalDate from, LocalDate to) {
+	        long total = 0;
+	        Connection con = ConnectDB.getConnection();
+	        PreparedStatement stmt = null;
+	        ResultSet rs = null;
+
+	        try {
+	            String sql = "SELECT SUM(Thanhtien) FROM HoaDon WHERE NgayLap BETWEEN ? AND ?";
+	            stmt = con.prepareStatement(sql);
+	            stmt.setDate(1, Date.valueOf(from));
+	            stmt.setDate(2, Date.valueOf(to));
+	            rs = stmt.executeQuery();
+	            if (rs.next()) {
+	                total = rs.getLong(1);
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        } finally {
+	            // Đóng tài nguyên
+	            try {
+	                if (rs != null) rs.close();
+	                if (stmt != null) stmt.close();
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }
+
+	        return total;
+	    }
+	 
+
+	   
+	
+
 
 }

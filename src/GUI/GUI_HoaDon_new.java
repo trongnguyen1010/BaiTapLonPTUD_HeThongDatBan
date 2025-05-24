@@ -216,16 +216,18 @@ public class GUI_HoaDon_new extends JPanel {
 			invoiceInfoPanel.setBackground(Color.WHITE);
 	
 			// Tạo mã hóa đơn ngẫu nhiên
-			String randomId = RandomGenerator.getRandomId(); // Tạo mã ngẫu nhiên cho hóa đơn
+			//String randomId = RandomGenerator.getRandomId(); // Tạo mã ngẫu nhiên cho hóa đơn
 	
 			// Khởi tạo panel và JTextField cho mã hóa đơn
 			invoiceInfoPanel.add(Box.createVerticalStrut(5));
 			JPanel maHDPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
 			maHDPanel.setBackground(Color.WHITE);
 			maHDPanel.add(new JLabel("Mã Hóa Đơn: "));
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmmss");
+            String stMaHD = "HD" + LocalDateTime.now().format(formatter);
 	
 			// Tạo JTextField và gán giá trị mã hóa đơn ngẫu nhiên
-			txtMaHD = new JTextField(randomId, 10); // Thay đổi từ "HD001" thành randomId
+			txtMaHD = new JTextField(stMaHD); // Thay đổi từ "HD001" thành randomId
 			txtMaHD.setEditable(false); // Không cho phép chỉnh sửa mã hóa đơn
 			txtMaHD.setBorder(null); // Không có viền
 			txtMaHD.setBackground(Color.WHITE); // Màu nền trắng
@@ -561,7 +563,7 @@ public class GUI_HoaDon_new extends JPanel {
 
 			            // 8. Tự động sinh mã hóa đơn mới cho lần tạo tiếp theo
 			         // Sinh mã hóa đơn theo thời gian hiện tại (yyyyMMddHHmmss)
-			            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddHHmmss");
+			            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmmss");
 			            String newMaHD = "HD" + LocalDateTime.now().format(formatter);
 			            txtMaHD.setText(newMaHD);
 

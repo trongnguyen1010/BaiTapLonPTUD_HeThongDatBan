@@ -123,10 +123,11 @@ public class KhachHangDAO {
             stmt.setString(2, kh.getTenKhachHang());
             // Email là tùy chọn. Nếu rỗng, đặt chuỗi rỗng.
             if (kh.getEmail() == null || kh.getEmail().isEmpty()) {
-                stmt.setString(3, "unknown@example.com"); // hoặc giá trị mặc định nào đó không trùng
+                stmt.setNull(3, java.sql.Types.NVARCHAR);
             } else {
                 stmt.setString(3, kh.getEmail());
             }
+
 
             int gioiTinhBit = kh.getGioiTinh().equalsIgnoreCase("Nam") ? 1 : 0;
             stmt.setInt(4, gioiTinhBit);
