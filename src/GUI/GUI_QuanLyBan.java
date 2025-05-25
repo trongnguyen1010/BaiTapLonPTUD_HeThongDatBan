@@ -2,7 +2,12 @@ package GUI;
 
 import com.toedter.calendar.JDateChooser;
 import DAO.Ban_DAO;
+import DAO.ChiTietPhieuDatBan_DAO;
+import DAO.GoiMonDAO;
 import Entity.Ban;
+import Entity.MonAn;
+import Entity.PhieuDatBan;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -14,8 +19,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -42,6 +52,9 @@ public class GUI_QuanLyBan extends JPanel {
     // Global lưu mã bàn được chọn (chỉ cho phép 1 bàn được chọn)
     private String selectedMaBan = null;
 	protected String selectedTableInfo;
+
+	// cài đặt đầu class
+	private static final long UPCOMING_THRESHOLD_MS = 30 * 60 * 1000; // 30 phút
 
     public GUI_QuanLyBan() {
         setLayout(null);
@@ -89,7 +102,100 @@ public class GUI_QuanLyBan extends JPanel {
 
         // Dãn khoảng cách đẩy các thành phần còn lại sang bên phải
         topPanel.add(Box.createHorizontalGlue());
+        
+        
+        // Nút Gọi món
+        JButton btnGoiMon = new JButton("GỌI MÓN", new ImageIcon(getClass().getResource("/view/icon/icon_goimon.png")));
+        btnGoiMon.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnGoiMon.setVerticalTextPosition(SwingConstants.BOTTOM);
+        btnGoiMon.setBorderPainted(false);
+        btnGoiMon.setContentAreaFilled(false);
+        btnGoiMon.setFocusPainted(false);
+        topPanel.add(btnGoiMon);
 
+     
+        btnGoiMon.addActionListener(e -> {
+            // 1) Kiểm tra đã chọn bàn chưa
+            if (selectedMaBan == null) {
+                JOptionPane.showMessageDialog(this, "Chọn bàn để gọi món!");
+                return;
+            }
+
+            // 2) Chọn món
+            GoiMonDialog dlg = new GoiMonDialog(
+                SwingUtilities.getWindowAncestor(this),
+                selectedMaBan
+            );
+            dlg.setVisible(true);
+            if (!dlg.isConfirmed()) return;
+
+            Map<MonAn,Integer> selected = dlg.getSelectedDishes();
+            if (selected.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Bạn chưa chọn món nào!");
+                return;
+            }
+
+            // 3) Tự động lấy giờ hiện tại làm start, +2h làm end
+            Date now = new Date();
+            SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
+            String startTime = fmt.format(now);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(now);
+            cal.add(Calendar.HOUR_OF_DAY, 2);
+            String endTime = fmt.format(cal.getTime());
+
+            // 4) Tạo phiếu đặt
+            Ban_DAO banDAO = new Ban_DAO();
+            // datBan trả về mã phiếu hoặc null nếu thất bại
+            String maPhieu = banDAO.datBan(
+                selectedMaBan,
+                now,        // ngày đặt = hôm nay
+                startTime,
+                endTime,
+                null        // khách walk-in: null hoặc "GUEST"
+            );
+            if (maPhieu == null) {
+                JOptionPane.showMessageDialog(this, "Tạo phiếu đặt thất bại!");
+                return;
+            }
+
+            // 5) Ghi chi tiết món vào ChiTietPhieuDatBan
+            ChiTietPhieuDatBan_DAO ctDAO = new ChiTietPhieuDatBan_DAO();
+            boolean ok = true;
+            for (var entry : selected.entrySet()) {
+                if (!ctDAO.addChiTiet(maPhieu, entry.getKey().getMaMonAn(), entry.getValue())) {
+                    ok = false;
+                    break;
+                }
+            }
+
+            // 6) Thông báo & cập nhật UI
+            if (!ok) {
+                JOptionPane.showMessageDialog(this, "Lỗi ghi chi tiết món!");
+            } else {
+//                JOptionPane.showMessageDialog(this, "Gọi món thành công!\n" +
+//                    "Bắt đầu: " + startTime + "   Kết thúc: " + endTime);
+//                // chuyển bàn sang "Đang phục vụ"
+//                Ban b = banDAO.getBanById(selectedMaBan);
+//                b.setTrangThai("Đang phục vụ");
+//                banDAO.updateBan(b);
+////                updateGridPanel(banDAO.getAllBanByDate(new Date()));
+//                // hiển thị đúng trạng thái theo giờ hiện tại
+//                updateGridPanel(banDAO.getAllBanByDateTime(new Date()));
+//                resetTableSelection();
+                JOptionPane.showMessageDialog(this, "Gọi món thành công!");
+                // **KHÔNG** cập nhật trực tiếp Ban.TrangThai
+                // chỉ refresh theo thời gian thực
+                updateGridPanelByDateTime(new Date());
+                resetTableSelection();
+            }
+        });
+
+
+
+
+        topPanel.add(Box.createHorizontalGlue());
+        
         // Combobox lọc (ví dụ: theo khu vực)
         JComboBox<String> comboTimKiem = new JComboBox<>(new String[] { "All", "Tầng 1", "Tầng 2", "Khu VIP" });
         comboTimKiem.setPreferredSize(new Dimension(150, 30));
@@ -160,9 +266,12 @@ public class GUI_QuanLyBan extends JPanel {
         panel_sidebar.add(Box.createVerticalStrut(10));
 
         // Lắng nghe sự thay đổi ngày: cập nhật gridPanel
+        // Chỉ một listener duy nhất cho dateChooser này:
         dateChooser.addPropertyChangeListener("date", evt -> {
-            Date selectedDate = dateChooser.getDate();
-            updateGridPanel(selectedDate);
+            Date sel = dateChooser.getDate() != null
+                       ? dateChooser.getDate()
+                       : new Date();
+            updateGridPanelByDateTime(sel);
         });
 
         // Sidebar hiển thị trạng thái bàn
@@ -178,7 +287,9 @@ public class GUI_QuanLyBan extends JPanel {
         gridPanel = new JPanel();
 //        gridPanel.setLayout(new GridLayout(0, 4, 10, 10));
         gridPanel.setLayout(new WrapLayout(FlowLayout.LEFT, 10, 10));
-        updateGridPanel(new Date());
+//        updateGridPanel(new Date());
+        // Lần đầu hiển thị theo thời gian thực
+        updateGridPanelByDateTime(new Date());
         JScrollPane scrollPane = new JScrollPane(gridPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBounds(220, 130, 1220, 550);
@@ -201,9 +312,11 @@ public class GUI_QuanLyBan extends JPanel {
         comboTimKiem.addActionListener(e -> {
             // Lấy ngày hiện tại từ dateChooser
             Date ngayDat = dateChooser.getDate();
-            Ban_DAO dao = new Ban_DAO();
-            // Truy xuất tất cả bàn theo ngày (để lát nữa lọc theo khu vực)
-            List<Ban> list = dao.getAllBanByDate(ngayDat);
+            Ban_DAO dao = new Ban_DAO(); 
+            // Lấy trạng thái theo thời gian thực tại now
+            Date now = new Date();
+            // Truy xuất tất cả bàn theo ngày (để lọc theo khu vực)
+            List<Ban> list = dao.getAllBanByDateTime(ngayDat, now);
             // Lấy giá trị trên combobox
             String selectedValue = ((String) comboTimKiem.getSelectedItem()).trim();
 
@@ -223,10 +336,12 @@ public class GUI_QuanLyBan extends JPanel {
                            .filter(b -> b.getMaKhuVuc().equalsIgnoreCase(areaFilter))
                            .collect(Collectors.toList());
             }
-
+            
             updateGridPanel(list);
+//            updateGridPanelByDateTime(dateChooser.getDate() != null
+//                    ? dateChooser.getDate() : new Date());
+//            updateGridPanelByDateTime(dateChooser.getDate());
         });
-
 
         // Sự kiện nút "THÊM"
         btnThem.addActionListener(e -> {
@@ -340,6 +455,7 @@ public class GUI_QuanLyBan extends JPanel {
 
     // Phương thức cập nhật gridPanel theo danh sách bàn được truyền vào.
     private void updateGridPanel(List<Ban> listBan) {
+    	
         gridPanel.removeAll();
 //        gridPanel.setLayout(new GridLayout(0, 4, 10, 10));
         gridPanel.setLayout(new WrapLayout(FlowLayout.LEFT, 20, 20));
@@ -358,10 +474,26 @@ public class GUI_QuanLyBan extends JPanel {
                     defaultIconPath = "/view/icon/icon_BanDangPhucVu.png";
                     break;
                 default:
-                    defaultIconPath = "/view/icon/icon_Default.png";
+                    defaultIconPath = "/view/icon/icon_BanTrong.png";
             }
-            final ImageIcon defaultIcon = new ImageIcon(new ImageIcon(getClass().getResource(defaultIconPath))
-                    .getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+            
+            URL url = getClass().getResource(defaultIconPath);
+            ImageIcon defaultIcon;
+            if (url != null) {
+                Image img = new ImageIcon(url)
+                              .getImage()
+                              .getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                defaultIcon = new ImageIcon(img);
+            } else {
+                System.err.println("Không tìm thấy icon: " + defaultIconPath);
+                // fallback: dùng hình trống 100×100
+                defaultIcon = new ImageIcon(
+                  new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB)
+                );
+            }
+
+//            final ImageIcon defaultIcon = new ImageIcon(new ImageIcon(getClass().getResource(defaultIconPath))
+//                    .getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
             final ImageIcon selectedIcon = new ImageIcon(new ImageIcon(getClass().getResource("/view/icon/icon_BanDangChon.png"))
                     .getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
 
@@ -382,6 +514,10 @@ public class GUI_QuanLyBan extends JPanel {
             tablePanel.add(Box.createVerticalStrut(5));
             tablePanel.add(labelText);
 
+            // sau khi thêm labelText vào tablePanel
+            
+//            showBookingPopup(tablePanel, ban, dateChooser.getDate());
+
             tablePanel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -394,17 +530,63 @@ public class GUI_QuanLyBan extends JPanel {
                     tablePanel.repaint();
                 }
             });
+            
+            // 1) Tooltip: luôn gọi, dù chuột có enter hay không
+            showBookingPopup(tablePanel, ban, dateChooser.getDate());
+
+            // 2) Highlight upcoming bookings
+            List<PhieuDatBan> schedule = new Ban_DAO().getBookingSchedule(ban.getMaBan(), dateChooser.getDate());
+            long now = System.currentTimeMillis();
+            boolean hasUpcoming = schedule.stream()
+                .map(PhieuDatBan::getThoiGianDat)      // java.util.Date
+                .map(Date::getTime)
+                .anyMatch(startTs -> startTs > now && startTs <= now + UPCOMING_THRESHOLD_MS);
+
+            if (hasUpcoming) {
+                // tô viền cam hoặc thay background
+                tablePanel.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 3, true));
+            }
 
             gridPanel.add(tablePanel);
         }
         gridPanel.revalidate();
         gridPanel.repaint();
     }
+    
+    private void showBookingPopup(JPanel tablePanel, Ban ban, Date ngayDat) {
+        List<PhieuDatBan> schedule = new Ban_DAO()
+            .getBookingSchedule(ban.getMaBan(), ngayDat);
+        if (schedule.isEmpty()) {
+            tablePanel.setToolTipText("Chưa có booking.");
+        } else {
+            StringBuilder sb = new StringBuilder("<html>Booking:<br/>");
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            for (PhieuDatBan p : schedule) {
+                sb.append(sdf.format(p.getThoiGianDat()))
+                  .append(" - ")
+                  .append(sdf.format(p.getThoiGianKetThuc()))
+                  .append("<br/>");
+            }
+            sb.append("</html>");
+            tablePanel.setToolTipText(sb.toString());
+        }
+    }
+
 
     // Phương thức cập nhật gridPanel theo ngày (nếu cần)
     private void updateGridPanel(Date date) {
         Ban_DAO dao = new Ban_DAO();
         List<Ban> list = dao.getAllBanByDate(date);
+        updateGridPanel(list);
+    }
+    
+    private void updateGridPanelByDateTime(Date selectedDate) {
+//        Ban_DAO dao = new Ban_DAO();
+//        List<Ban> list = dao.getAllBanByDateTime(date);
+        Date now = new Date();
+        Ban_DAO dao = new Ban_DAO();
+        List<Ban> list = dao.getAllBanByDateTime(selectedDate, now);
+        // Gọi lại updateGridPanel(List<Ban>) cũ của bạn
         updateGridPanel(list);
     }
 

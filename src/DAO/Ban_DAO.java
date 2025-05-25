@@ -56,37 +56,6 @@ public class Ban_DAO {
         return booked;
     }
 
-//    // Đặt bàn, trả về true nếu đặt thành công
-//    public boolean datBan(String maBan, Date ngayDat, String startTime, String endTime, String maKhachHang) {
-//        boolean success = false;
-//        Connection con = ConnectDB.getConnection();
-//        PreparedStatement ps = null;
-//        try {
-//            // Sinh mã phiếu đặt dựa vào thời gian, ví dụ
-//            String maPhieu = "PD" + System.currentTimeMillis();
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//            String dateStr = sdf.format(ngayDat);
-//            Timestamp bookingStart = Timestamp.valueOf(dateStr + " " + startTime + ":00");
-//            Timestamp bookingEnd = Timestamp.valueOf(dateStr + " " + endTime + ":00");
-//
-//            String sql = "INSERT INTO PhieuDatBan (MaPhieu, ThoiGianDat, ThoiGianKetThuc, MaBan, MaKhachHang) "
-//                       + "VALUES (?, ?, ?, ?, ?)";
-//            ps = con.prepareStatement(sql);
-//            ps.setString(1, maPhieu);
-//            ps.setTimestamp(2, bookingStart);
-//            ps.setTimestamp(3, bookingEnd);
-//            ps.setString(4, maBan);
-//            ps.setString(5, maKhachHang); // Chú ý: giá trị này phải tồn tại trong bảng KhachHang
-//            int n = ps.executeUpdate();
-//            success = n > 0;
-//        } catch (SQLException | IllegalArgumentException e) {
-//            e.printStackTrace();
-//        } finally {
-//            try { if (ps != null) ps.close(); } catch (SQLException e) { e.printStackTrace(); }
-//        }
-//        return success;
-//    }
-
  // Đặt bàn, trả về mã phiếu nếu thành công, ngược lại trả về null
     public String datBan(String maBan, Date ngayDat, String startTime, String endTime, String maKhachHang) {
         // Tạo mã phiếu duy nhất
@@ -223,6 +192,121 @@ public class Ban_DAO {
         }
         return banList;
     }
+    
+ // Trong Ban_DAO:
+    public List<Ban> getAllBanByDateTime(Date selectedDate, Date now) {
+        List<Ban> list = new ArrayList<>();
+        String sql =
+          "SELECT b.MaBan,\n" +
+          "  CASE\n" +
+          "    WHEN EXISTS (\n" +
+          "      SELECT 1 FROM PhieuDatBan p\n" +
+          "      WHERE p.MaBan = b.MaBan\n" +
+          "        AND CAST(p.ThoiGianDat AS DATE) = CAST(? AS DATE)\n" +      // lọc đúng ngày selectedDate
+          "        AND ? BETWEEN p.ThoiGianDat AND p.ThoiGianKetThuc\n" +      // đang phục vụ
+          "    ) THEN N'Đang phục vụ'\n" +
+          "    WHEN EXISTS (\n" +
+          "      SELECT 1 FROM PhieuDatBan p\n" +
+          "      WHERE p.MaBan = b.MaBan\n" +
+          "        AND CAST(p.ThoiGianDat AS DATE) = CAST(? AS DATE)\n" +      // cùng ngày
+          "        AND p.ThoiGianDat > ?\n" +                                  // giờ đặt còn sau now => sắp (Đã đặt)
+          "    ) THEN N'Đã đặt'\n" +
+          "    ELSE N'Trống'\n" +
+          "  END AS TrangThai,\n" +
+          "  b.MaKhuVuc, b.SoChoNgoi\n" +
+          "FROM Ban b";
+        try (Connection con = ConnectDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+          Timestamp nowTs  = new Timestamp(now.getTime());
+          java.sql.Date selDate = new java.sql.Date(selectedDate.getTime());
+          // Tham số thứ tự: ?, ?, ?, ?
+          ps.setDate(1, selDate);
+          ps.setTimestamp(2, nowTs);
+          ps.setDate(3, selDate);
+          ps.setTimestamp(4, nowTs);
+          try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+              list.add(new Ban(
+                rs.getString("MaBan"),
+                rs.getString("TrangThai"),
+                rs.getString("MaKhuVuc"),
+                rs.getInt("SoChoNgoi")
+              ));
+            }
+          }
+        } catch (SQLException ex) {
+          ex.printStackTrace();
+        }
+        return list;
+    }
+
+//    
+//    public List<Ban> getAllBanByDateTime(Date selectedDate) {
+//        List<Ban> list = new ArrayList<>();
+//        String sql =
+//          "SELECT b.MaBan,\n" +
+//          "  CASE\n" +
+//          "    -- 1) Nếu ngày chọn < ngày hôm nay thì luôn trống\n" +
+//          "    WHEN CAST(? AS DATE) < CAST(GETDATE() AS DATE) THEN N'Trống'\n" +
+//          "    -- 2) Nếu ngày chọn > ngày hôm nay thì nếu có booking nào trong ngày đó => đã đặt, ngược lại trống\n" +
+//          "    WHEN CAST(? AS DATE) > CAST(GETDATE() AS DATE)\n" +
+//          "      AND EXISTS(\n" +
+//          "        SELECT 1 FROM PhieuDatBan p\n" +
+//          "        WHERE p.MaBan=b.MaBan\n" +
+//          "          AND CAST(p.ThoiGianDat AS DATE)=CAST(? AS DATE)\n" +
+//          "      ) THEN N'Đã đặt'\n" +
+//          "    WHEN CAST(? AS DATE) > CAST(GETDATE() AS DATE) THEN N'Trống'\n" +
+//          "    -- 3) Nếu ngày chọn = hôm nay: kiểm xem có booking đang diễn ra không => Đang phục vụ\n" +
+//          "    WHEN CAST(? AS DATE)=CAST(GETDATE() AS DATE)\n" +
+//          "      AND EXISTS(\n" +
+//          "        SELECT 1 FROM PhieuDatBan p\n" +
+//          "        WHERE p.MaBan=b.MaBan\n" +
+//          "          AND ? BETWEEN p.ThoiGianDat AND p.ThoiGianKetThuc\n" +
+//          "      ) THEN N'Đang phục vụ'\n" +
+//          "    -- 4) Nếu ngày chọn = hôm nay và còn booking sắp tới trong ngày => Đã đặt\n" +
+//          "    WHEN CAST(? AS DATE)=CAST(GETDATE() AS DATE)\n" +
+//          "      AND EXISTS(\n" +
+//          "        SELECT 1 FROM PhieuDatBan p\n" +
+//          "        WHERE p.MaBan=b.MaBan\n" +
+//          "          AND p.ThoiGianDat > ?\n" +
+//          "      ) THEN N'Đã đặt'\n" +
+//          "    ELSE N'Trống'\n" +
+//          "  END AS TrangThai,\n" +
+//          "  b.MaKhuVuc, b.SoChoNgoi\n" +
+//          "FROM Ban b";
+//        try (Connection con = ConnectDB.getConnection();
+//             PreparedStatement ps = con.prepareStatement(sql)) {
+//
+//            Timestamp now = new Timestamp(System.currentTimeMillis());
+//            java.sql.Date sqlDate = new java.sql.Date(selectedDate.getTime());
+//
+//            // 1 & 2 & 3 & 4 lần lượt dùng selectedDate & now
+//            ps.setDate(1, sqlDate);
+//            ps.setDate(2, sqlDate);
+//            ps.setDate(3, sqlDate);
+//            ps.setDate(4, sqlDate);
+//            ps.setDate(5, sqlDate);
+//            ps.setTimestamp(6, now);
+//            ps.setDate(7, sqlDate);
+//            ps.setTimestamp(8, now);
+//
+//            try (ResultSet rs = ps.executeQuery()) {
+//                while (rs.next()) {
+//                    list.add(new Ban(
+//                      rs.getString("MaBan"),
+//                      rs.getString("TrangThai"),
+//                      rs.getString("MaKhuVuc"),
+//                      rs.getInt("SoChoNgoi")
+//                    ));
+//                }
+//            }
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//        return list;
+//    }
+
+
 
 //     Thêm bàn mới
     public void addBan(Ban ban) {

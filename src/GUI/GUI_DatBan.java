@@ -173,11 +173,20 @@ public class GUI_DatBan extends JPanel {
 		// ------------------ Grid Panel ------------------
 		gridPanel = new JPanel();
 		gridPanel.setLayout(new WrapLayout(FlowLayout.LEFT, 20, 20));
-		updateGridPanel(new Date());
+//		updateGridPanel(new Date());
+		// Lần đầu hiển thị theo thời gian thực của ngày hôm nay
+		updateGridPanelByDateTime(new Date(), new Date());
 		JScrollPane scrollPane = new JScrollPane(gridPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setBounds(220, 130, 1220, 550);
 		add(scrollPane);
+		
+		dateChooser.addPropertyChangeListener("date", evt -> {
+		    Date ngayDat = dateChooser.getDate();
+		    // mỗi khi đổi ngày, vẽ lại theo time “now” hiện tại
+		    updateGridPanelByDateTime(ngayDat, new Date());
+		});
+
 
 		// ------------------ Sự kiện ------------------
 		btnTimBan.addActionListener(e -> {
@@ -199,8 +208,10 @@ public class GUI_DatBan extends JPanel {
 		    
 		    // Lấy danh sách bàn theo ngày
 		    Ban_DAO dao = new Ban_DAO();
-		    List<Ban> list = dao.getAllBanByDate(ngayDat);
-		    
+//		    List<Ban> list = dao.getAllBanByDate(ngayDat);
+		    // lấy theo ngày chọn & giờ hiện tại
+		    List<Ban> list = dao.getAllBanByDateTime(ngayDat, new Date());
+
 		    // Lọc theo khu vực, số chỗ và kiểm tra bàn trống ở khoảng thời gian đặt
 		    List<Ban> filtered = list.stream()
 		            .filter(b -> ("All".equalsIgnoreCase(khuVuc) || khuVuc.equalsIgnoreCase(b.getMaKhuVuc())))
@@ -214,75 +225,6 @@ public class GUI_DatBan extends JPanel {
 		    
 		    updateGridPanel(filtered);
 		});
-//		---------------------------------------------------------
-//		btnDatBan.addActionListener(e -> {
-//		    if (selectedMaBan == null) {
-//		        JOptionPane.showMessageDialog(GUI_DatBan.this, "Bạn chưa chọn bàn nào!");
-//		        return;
-//		    }
-//		    Date ngayDat = dateChooser.getDate();
-//		    String startTime = (String) comboGioBatDau.getSelectedItem();
-//		    String endTime   = (String) comboGioKetThuc.getSelectedItem();
-//
-//		    Ban_DAO banDAO = new Ban_DAO();
-//		    if (banDAO.isTableBooked(selectedMaBan, ngayDat, startTime, endTime)) {
-//		        JOptionPane.showMessageDialog(GUI_DatBan.this, "Bàn đã được đặt trong khoảng thời gian này.");
-//		        return;
-//		    }
-//
-//		    // Mở dialog nhập thông tin khách hàng (và chọn món nếu có)
-//		    DatBanDialog dialog = new DatBanDialog(
-//		        SwingUtilities.getWindowAncestor(GUI_DatBan.this),
-//		        selectedTableInfo, ngayDat, startTime, endTime
-//		    );
-//		    dialog.setVisible(true);
-//		    if (!dialog.isConfirmed()) return;
-//
-//		    // 1) Xử lý Khách hàng
-//		    String sdt = dialog.getSdt();
-//		    KhachHangDAO khDAO = new KhachHangDAO();
-//		    KhachHang kh = khDAO.getKhachHangByPhone(sdt);
-//		    if (kh == null) {
-//		        kh = new KhachHang(
-//		            sdt, 
-//		            dialog.getTenKhach(), 
-//		            dialog.getEmail(), 
-//		            dialog.getGioiTinh(), 
-//		            sdt
-//		        );
-//		        if (!khDAO.insert(kh)) {
-//		            JOptionPane.showMessageDialog(GUI_DatBan.this, "Lỗi khi tạo khách hàng mới!");
-//		            return;
-//		        }
-//		    }
-//
-//		    // 2) Đặt bàn, nhận về mã phiếu
-//		    String maPhieu = banDAO.datBan(
-//		        selectedMaBan, 
-//		        ngayDat, 
-//		        startTime, 
-//		        endTime, 
-//		        kh.getMaKhachHang()
-//		    );
-//		    if (maPhieu == null) {
-//		        JOptionPane.showMessageDialog(GUI_DatBan.this, "Đặt bàn thất bại!");
-//		        return;
-//		    }
-//
-//		    // 3) Chèn chi tiết món (nếu có)
-//		    ChiTietPhieuDatBan_DAO ctDAO = new ChiTietPhieuDatBan_DAO();
-//		    // Giả sử dialog.getSelectedDishes() trả về Map<MonAn,Integer> món + số lượng
-//		    for (Map.Entry<MonAn,Integer> entry : dialog.getSelectedDishes().entrySet()) {
-//		        String maMon  = entry.getKey().getMaMonAn();
-//		        int    qty    = entry.getValue();
-//		        ctDAO.addChiTiet(maPhieu, maMon, qty);
-//		    }
-//
-//		    // 4) Cập nhật giao diện
-//		    JOptionPane.showMessageDialog(GUI_DatBan.this, "Đặt bàn thành công!");
-//		    updateGridPanel(banDAO.getAllBanByDate(ngayDat));
-//		    resetTableSelection();
-//		});
 		
 		btnDatBan.addActionListener(e -> {
 		    if (selectedMaBan == null) {
@@ -342,7 +284,8 @@ public class GUI_DatBan extends JPanel {
 
 		    // 4) Cập nhật lại UI
 		    JOptionPane.showMessageDialog(this, "Đặt bàn thành công!");
-		    updateGridPanel(banDAO.getAllBanByDate(ngayDat));
+//		    updateGridPanel(banDAO.getAllBanByDate(ngayDat));
+		    updateGridPanelByDateTime(ngayDat, new Date());
 		    resetTableSelection();
 		});
 
@@ -495,6 +438,14 @@ public class GUI_DatBan extends JPanel {
 	        tablePanel.setToolTipText(sb.toString());
 	    }
 	}
+	
+	/** Cập nhật gridPanel dựa trên ngày chọn + thời gian hiện tại */
+	private void updateGridPanelByDateTime(Date selectedDate, Date now) {
+	    Ban_DAO dao = new Ban_DAO();
+	    List<Ban> list = dao.getAllBanByDateTime(selectedDate, now);
+	    updateGridPanel(list);
+	}
+
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
